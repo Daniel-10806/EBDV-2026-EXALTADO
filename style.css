@@ -1,0 +1,1768 @@
+/* BLOQUEAR SCROLL */
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',Arial;
+}
+
+/* FONDO FIJO */
+
+.bg{
+position:fixed;
+inset:0;
+background:url("fondo.png") center/cover no-repeat;
+z-index:-10;
+filter:brightness(.95);
+}
+
+/* CANVAS */
+
+#game{
+position:fixed;
+inset:0;
+z-index:-5;
+}
+
+/* UI */
+
+#ui{
+position:relative;
+z-index:5;
+text-align:center;
+}
+
+/* HEADER PERFECTO */
+
+header{
+    height: 90px;
+    display:grid;
+    grid-template-columns: auto 1fr auto; /* logo | titulo | botones */
+    align-items:center;
+    animation: headerGlow 4s ease-in-out infinite;
+    padding:12px 30px;
+
+    background:linear-gradient(
+        to right,
+        rgba(0,0,0,.7),
+        rgba(20,20,20,.6),
+        rgba(0,0,0,.7)
+    );
+
+    color:white;
+    backdrop-filter:blur(10px);
+    box-shadow:0 6px 25px black;
+    border-bottom:2px solid gold;
+}
+
+@keyframes headerGlow{
+    0%{
+        box-shadow:0 6px 20px rgba(255,215,0,.4);
+    }
+    50%{
+        box-shadow:0 6px 35px rgba(255,215,0,.9);
+    }
+    100%{
+        box-shadow:0 6px 20px rgba(255,215,0,.4);
+    }
+}
+
+/* TITULO CENTRADO REAL */
+
+header h1{
+    text-align:center;
+    margin:0;
+    animation: titleGlow 3s ease-in-out infinite;
+    text-shadow:0 0 15px gold;
+    letter-spacing:1px;
+}
+
+@keyframes titleGlow{
+    0%{
+        text-shadow:0 0 10px gold;
+    }
+    50%{
+        text-shadow:
+            0 0 25px gold,
+            0 0 40px rgba(255,215,0,.8);
+    }
+    100%{
+        text-shadow:0 0 10px gold;
+    }
+}
+
+/* CONTROLES DERECHA */
+
+.top-controls{
+    display:flex;
+    gap:14px; /* separación */
+    align-items:center;
+}
+
+/* BOTONES HEADER PRO */
+
+/* BOTONES HEADER PRO LIMPIOS */
+
+.top-controls button{
+    width:46px;
+    height:46px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:22px;
+    font-weight:bold;
+
+    border-radius:50%;
+    border:2px solid rgba(255,215,0,.9);
+
+    background:linear-gradient(
+        145deg,
+        #111,
+        #2a2a2a
+    );
+
+    color:#fff;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 0 6px rgba(255,215,0,.6),
+        inset 0 0 6px rgba(255,255,255,.15);
+
+    transition:all .25s ease;
+
+    position:relative;
+    overflow:hidden;
+}
+
+.top-controls button:nth-child(2){
+    animation-delay:1s;
+}
+
+.top-controls button:nth-child(3){
+    animation-delay:2s;
+}
+
+@keyframes floatIcon{
+    0%{ transform:translateY(0); }
+    50%{ transform:translateY(-4px); }
+    100%{ transform:translateY(0); }
+}
+
+/* AURA GIRATORIA */
+
+.top-controls button::before{
+    content:"";
+    position:absolute;
+    inset:-3px;
+
+    background:conic-gradient(
+        gold,
+        transparent,
+        gold
+    );
+
+    opacity:.7;
+
+    animation: rotateGlow 3s linear infinite;
+}
+
+@keyframes rotateGlow{
+    from{ transform:rotate(0deg); }
+    to{ transform:rotate(360deg); }
+}
+
+/* HOVER FINO */
+
+.top-controls button:hover{
+    transform:scale(1.2);
+
+    background:linear-gradient(
+        145deg,
+        #222,
+        #444
+    );
+
+    box-shadow:
+        0 0 12px gold,
+        0 0 25px rgba(255,215,0,.6);
+}
+
+/* CLICK */
+
+.top-controls button:active{
+    transform:scale(.92);
+    box-shadow:0 0 8px gold inset;
+}
+
+/* TIMER */
+
+#timer{
+    position:relative;
+    margin:20px auto 10px;
+    top: 30px;
+    font-size:90px;
+    font-weight:bold;
+    color:white;
+    padding:12px 40px;
+    border-radius:25px;
+
+    background:linear-gradient(
+        45deg,
+        #000,
+        #222,
+        #000
+    );
+
+    text-shadow:0 0 25px gold;
+    box-shadow:0 0 25px gold;
+
+    width:fit-content;
+
+    animation: timerPulse 1.8s infinite;
+}
+
+@keyframes timerPulse{
+    0%{ transform:scale(1); }
+    50%{ transform:scale(1.05); }
+    100%{ transform:scale(1); }
+}
+
+#rankingPanel{
+    margin-top:100px;
+}
+
+/* RANKING HUD */
+
+#ranking{
+position:sticky;
+width: 95%;
+padding: 18px;
+top:0;
+background:rgba(0,0,0,.65);
+color:white;
+margin:8px auto;
+width:90%;
+padding:10px;
+border-radius:15px;
+font-weight:bold;
+backdrop-filter:blur(8px);
+box-shadow:0 0 15px gold;
+border:1px solid gold;
+}
+
+.rankRow{
+    display:flex;
+    justify-content:space-between;
+
+    padding:12px 16px;
+    margin:6px 0;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,.18);
+
+    font-size:22px;  
+    letter-spacing:.5px;
+}
+
+/* ===== BIBLIA MEJORADA ===== */
+
+.verseHeader{
+    font-size:22px;
+    font-weight:bold;
+    color:#6d4c41;
+
+    margin-bottom:10px;
+
+    text-shadow:0 0 6px gold;
+}
+
+.verseIcon{
+    font-size:64px;
+    margin:10px 0;
+
+    animation: bibleFloat 2.5s ease-in-out infinite;
+}
+
+@keyframes bibleFloat{
+    0%{ transform:translateY(0); }
+    50%{ transform:translateY(-6px); }
+    100%{ transform:translateY(0); }
+}
+
+.verseFooter{
+    margin-top:12px;
+
+    font-size:14px;
+    font-style:italic;
+
+    color:#795548;
+
+    border-top:1px solid gold;
+    padding-top:8px;
+}
+
+.rankRow span{
+    font-weight:bold;
+    color:gold;
+    font-size:24px;  
+}
+
+/* PODIO FLOTANTE */
+
+#rankingPanel{
+    animation: floatPanel 5s ease-in-out infinite;
+}
+
+@keyframes floatPanel{
+    0%{ transform:translateY(0); }
+    50%{ transform:translateY(-6px); }
+    100%{ transform:translateY(0); }
+}
+
+/* CONTENEDOR */
+
+.container{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:45px;
+    max-width:900px;
+    margin:0 auto;
+    padding-top:40px;
+}
+
+/* TARJETAS VIDRIO */
+
+.team{
+background:rgba(255,255,255,.18);
+border-radius:25px;
+animation: floatCard 5s ease-in-out infinite;
+padding:20px;
+box-shadow:0 12px 30px rgba(0,0,0,.45);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,255,255,.4);
+transition:.4s;
+}
+
+.team:nth-child(2){
+    animation-delay:1s;
+}
+
+.team:nth-child(3){
+    animation-delay:2s;
+}
+
+.team:nth-child(4){
+    animation-delay:3s;
+}
+
+@keyframes floatCard{
+    0%{ transform:translateY(0); }
+    50%{ transform:translateY(-6px); }
+    100%{ transform:translateY(0); }
+}
+
+.team:hover{
+transform:scale(1.06);
+}
+
+/* LÍDER */
+
+.leader{
+box-shadow:0 0 35px gold;
+border:2px solid gold;
+animation:leaderGlow 2s infinite alternate;
+}
+
+@keyframes leaderGlow{
+from{box-shadow:0 0 20px gold}
+to{box-shadow:0 0 40px gold}
+}
+
+/* GLOBOS EN FILA */
+
+.balloons{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:nowrap; 
+    gap:6px;
+    animation: balloonFloat 2.5s ease-in-out infinite;
+    min-height:50px;
+    margin:12px 0;
+    overflow:hidden;
+}
+
+/* FLASH DE PODER */
+
+.powerFlash{
+    animation: powerPulse .4s ease;
+}
+
+@keyframes powerPulse{
+    0%{
+        transform:scale(1);
+        box-shadow:0 0 15px gold;
+    }
+    50%{
+        transform:scale(1.08);
+        box-shadow:0 0 40px gold;
+    }
+    100%{
+        transform:scale(1);
+        box-shadow:0 0 15px gold;
+    }
+}
+
+.balloons span:nth-child(even){
+    animation-delay:.6s;
+}
+
+@keyframes balloonFloat{
+    0%{ transform:translateY(0); }
+    50%{ transform:translateY(-4px); }
+    100%{ transform:translateY(0); }
+}
+
+.balloons span{
+    font-size:30px;
+    line-height:1;
+    filter:drop-shadow(0 0 4px rgba(0,0,0,.4));
+}
+
+/* FILTROS DE COLOR PARA GLOBOS */
+
+.rojo .balloons span{
+    filter:drop-shadow(0 0 4px #f44336);
+}
+
+.azul .balloons span{
+    filter:
+        hue-rotate(200deg)
+        saturate(2)
+        drop-shadow(0 0 4px #2196f3);
+}
+
+.verde .balloons span{
+    filter:
+        hue-rotate(90deg)
+        saturate(2)
+        drop-shadow(0 0 4px #4caf50);
+}
+
+.amarillo .balloons span{
+    filter:
+        hue-rotate(45deg)
+        saturate(3)
+        brightness(1.2)
+        drop-shadow(0 0 4px #ffeb3b);
+}
+
+/* BOTONES */
+
+.buttons button{
+font-size:22px;
+width:48px;
+height:48px;
+border-radius:50%;
+cursor:pointer;
+border:none;
+transition:.25s;
+background:rgba(255,255,255,.85);
+}
+
+.buttons button:hover{
+transform:scale(1.3) rotate(10deg);
+background:#fff176;
+box-shadow:0 0 10px gold;
+}
+
+/* POPUP */
+
+#popup{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.92);
+display:none;
+justify-content:center;
+align-items:center;
+font-size:42px;
+color:white;
+z-index:50;
+text-align:center;
+padding:30px;
+line-height:1.4;
+}
+
+/* BIBLIA CARD */
+
+#verseBox{
+position:fixed;
+bottom:25px;
+right:25px;
+background:linear-gradient(
+135deg,
+#fffde7,
+#fff9c4
+);
+padding:15px;
+border-radius:16px;
+display:none;
+z-index:60;
+box-shadow:0 0 25px gold;
+border:2px solid gold;
+width:280px;
+animation:verseIn .4s ease;
+}
+
+@keyframes verseIn{
+from{transform:translateY(50px);opacity:0}
+to{transform:translateY(0);opacity:1}
+}
+
+#verseBox::before{
+content:"📖 Palabra de Dios";
+display:block;
+font-weight:bold;
+margin-bottom:6px;
+color:#5d4037;
+}
+
+#verseInput{
+width:100%;
+height:90px;
+border-radius:10px;
+border:1px solid #ccc;
+padding:6px;
+resize:none;
+}
+
+/* COLORES */
+
+.rojo{
+border:3px solid #f44336;
+box-shadow:0 0 15px #f44336;
+}
+
+.azul{
+border:3px solid #2196f3;
+box-shadow:0 0 15px #2196f3;
+}
+
+.verde{
+border:3px solid #4caf50;
+box-shadow:0 0 15px #4caf50;
+}
+
+.amarillo{
+border:3px solid #ffeb3b;
+box-shadow:0 0 15px #ffeb3b;
+}
+
+#winnerTitle{
+    position:absolute;
+    top:80px;
+    width:100%;
+    text-align:center;
+    font-size:48px;
+    font-weight:bold;
+    color:gold;
+    text-shadow:0 0 25px gold;
+    animation:champGlow 2s infinite alternate;
+}
+
+/* MODO FINAL */
+
+#finalMode{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.95);
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:30px;
+    z-index:1200;
+}
+
+/* Logo circular */
+#churchLogo{
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    overflow:hidden;
+    border:5px solid gold;
+    box-shadow:0 0 30px gold;
+    animation:spinGlow 6s linear infinite;
+}
+
+#churchLogo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* Animación */
+@keyframes spinGlow{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+}
+
+/* LOGO IGLESIA PRO */
+
+#mainLogo{
+    position:relative; 
+    width:70px;
+    height:70px;
+    left: 30px;
+    border-radius:50%;
+    overflow:hidden;
+
+    border:3px solid gold;
+
+    background:#000;
+
+    flex-shrink:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    animation: logoPulse 4s ease-in-out infinite;
+
+    box-shadow:
+        0 0 12px gold,
+        0 0 25px rgba(255,215,0,.5);
+}
+
+/* Aura giratoria */
+
+#mainLogo::before{
+    content:"";
+
+    position:absolute;
+    inset:-6px;
+
+    border-radius:50%;
+
+    background:conic-gradient(
+        gold,
+        transparent,
+        gold,
+        transparent,
+        gold
+    );
+
+    animation: logoRotate 6s linear infinite;
+
+    opacity:.7;
+}
+
+/* Imagen arriba */
+
+#mainLogo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+
+    border-radius:50%;
+
+    position:relative;
+    z-index:2;
+}
+
+#finalPodium{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+}
+
+#mainLogo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+#winnerTitle{
+    animation: titlePop 1.2s ease;
+}
+
+.first{
+    animation: podiumUp 1s ease forwards,
+               glowChamp 2s infinite alternate;
+}
+
+@keyframes glowChamp{
+    from{box-shadow:0 0 20px gold}
+    to{box-shadow:0 0 50px gold}
+}
+
+@keyframes titlePop{
+    0%{transform:scale(.5);opacity:0}
+    60%{transform:scale(1.2)}
+    100%{transform:scale(1)}
+}
+
+#ranking{
+    transition:all .4s ease;
+}
+
+/* Contador */
+#finalTimer{
+    font-size:90px;
+    font-weight:bold;
+    color:white;
+    text-shadow:0 0 25px gold;
+}
+
+@keyframes champGlow{
+    from{opacity:.7}
+    to{opacity:1}
+}
+
+/* LAYOUT */
+
+.layout{
+    display:grid;
+    grid-template-columns:320px 1fr;
+    gap:50px;
+    max-width:1400px;
+    margin:40px auto 0;
+    padding:20px;
+    align-items:flex-start;
+}
+
+/* PANEL RANKING */
+
+#rankingPanel{
+background:rgba(0,0,0,.6);
+border-radius:20px;
+padding:15px;
+color:white;
+backdrop-filter:blur(10px);
+box-shadow:0 0 20px gold;
+border:1px solid gold;
+}
+
+#rankingPanel h3{
+margin-bottom:10px;
+text-shadow:0 0 10px gold;
+}
+
+/* BOTONES POR COLOR */
+
+.rojo .buttons button:hover{
+background:#f44336;
+color:white;
+}
+
+.azul .buttons button:hover{
+background:#2196f3;
+color:white;
+}
+
+.verde .buttons button:hover{
+background:#4caf50;
+color:white;
+}
+
+.amarillo .buttons button:hover{
+background:#ffeb3b;
+color:black;
+}
+
+/* ANIMACIÓN GLOBO */
+
+.balloonAnim{
+position:fixed;
+font-size:30px;
+pointer-events:none;
+z-index:100;
+animation:balloonPop .8s ease forwards;
+}
+
+@keyframes balloonPop{
+0%{transform:scale(1) translateY(0);opacity:1}
+50%{transform:scale(1.4) translateY(-40px)}
+100%{transform:scale(0) translateY(-80px);opacity:0}
+}
+
+.rankRow{
+display:flex;
+justify-content:space-between;
+padding:6px 10px;
+margin:4px 0;
+border-radius:10px;
+background:rgba(255,255,255,.15);
+font-size:16px;
+}
+
+.rankRow span{
+font-weight:bold;
+color:gold;
+}
+
+/* MENSAJE FLOTANTE */
+
+.floatMsg{
+position:fixed;
+font-size:20px;
+font-weight:bold;
+padding:6px 12px;
+border-radius:12px;
+background:rgba(0,0,0,.7);
+color:white;
+pointer-events:none;
+z-index:200;
+animation:floatUp 1.2s ease forwards;
+}
+
+@keyframes floatUp{
+0%{opacity:1;transform:translateY(0)}
+100%{opacity:0;transform:translateY(-60px)}
+}
+
+/* MENSAJE HEADER ANIMADO */
+
+.glowMsg{
+font-weight:bold;
+text-shadow:0 0 12px gold;
+}
+
+.flash{
+animation:flashGlow .9s ease;
+}
+
+@keyframes flashGlow{
+0%{transform:scale(1);opacity:1}
+50%{transform:scale(1.3);opacity:1}
+100%{transform:scale(1);opacity:1}
+}
+
+/* PANEL INFO */
+.panelInfo p{
+margin:6px 0;
+}
+
+.panelStat{
+background:rgba(255,255,255,.12);
+border-radius:10px;
+padding:6px;
+margin-top:6px;
+font-size:13px;
+}
+
+#miniVerse{
+margin-top:8px;
+font-style:italic;
+color:gold;
+font-size:13px;
+}
+
+/* MENSAJE CENTRAL GRANDE */
+
+#centerMsg{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:48px;
+font-weight:bold;
+padding:25px 40px;
+border-radius:20px;
+background:rgba(0,0,0,.75);
+color:white;
+z-index:500;
+display:none;
+text-align:center;
+text-shadow:0 0 20px gold;
+animation:msgPop .9s ease;
+}
+
+@keyframes msgPop{
+0%{transform:translate(-50%,-50%) scale(.6);opacity:0}
+60%{transform:translate(-50%,-50%) scale(1.2)}
+100%{transform:translate(-50%,-50%) scale(1)}
+}
+
+/* ANIMACION RANKING */
+
+.rankRow{
+animation:rankMove .5s ease;
+}
+
+@keyframes rankMove{
+from{opacity:0;transform:translateX(-30px)}
+to{opacity:1;transform:translateX(0)}
+}
+
+/* PODIO FINAL */
+
+#finalPodium{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.9);
+display:none;
+justify-content:center;
+align-items:flex-end;
+gap:40px;
+z-index:900;
+padding-bottom:80px;
+}
+
+.podiumBox{
+width:160px;
+text-align:center;
+color:white;
+font-size:26px;
+font-weight:bold;
+border-radius:15px 15px 0 0;
+box-shadow:0 0 25px gold;
+animation:podiumUp 1s ease forwards;
+opacity:0;
+}
+
+.first{
+background:gold;
+color:black;
+height:260px;
+animation-delay:.2s;
+}
+
+.second{
+background:silver;
+color:black;
+height:200px;
+animation-delay:.4s;
+}
+
+.third{
+background:#cd7f32;
+height:160px;
+animation-delay:.6s;
+}
+
+@keyframes podiumUp{
+from{transform:translateY(200px);opacity:0}
+to{transform:translateY(0);opacity:1}
+}
+
+.team{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.team h2{
+    margin-bottom:10px;
+}
+
+.buttons{
+    margin-top:12px;
+}
+
+/* OVERLAY BIBLIA */
+
+#verseOverlay{
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.85);
+    backdrop-filter:blur(8px);
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:1000;
+
+    animation:fadeIn .4s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0}
+    to{opacity:1}
+}
+
+/* CAJA BIBLIA PRO */
+
+#verseModal{
+    background:linear-gradient(
+        135deg,
+        #fffde7,
+        #fff9c4
+    );
+
+    width:420px;
+    max-width:90%;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:
+        0 0 40px gold,
+        0 0 80px rgba(255,215,0,.6);
+
+    border:3px solid gold;
+
+    text-align:center;
+
+    animation:modalPop .5s ease;
+}
+
+@keyframes modalPop{
+    0%{transform:scale(.7);opacity:0}
+    60%{transform:scale(1.1)}
+    100%{transform:scale(1)}
+}
+
+#verseModal h3{
+    margin-bottom:12px;
+    color:#5d4037;
+    text-shadow:0 0 5px gold;
+}
+
+#verseModal textarea{
+    width:100%;
+    height:120px;
+
+    border-radius:12px;
+    border:1px solid #ccc;
+
+    padding:10px;
+
+    font-size:16px;
+
+    resize:none;
+}
+
+#verseModal button{
+    margin-top:12px;
+
+    padding:8px 18px;
+
+    border:none;
+    border-radius:12px;
+
+    background:gold;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+#verseModal button:hover{
+    background:#ffd54f;
+    transform:scale(1.1);
+}
+
+/* TEXTO VERSO CENTRAL */
+
+#verseText{
+    margin:20px 0;
+
+    font-size:22px;
+    line-height:1.5;
+
+    color:#4e342e;
+
+    background:rgba(255,255,255,.8);
+
+    padding:18px;
+
+    border-radius:15px;
+
+    box-shadow:inset 0 0 8px rgba(0,0,0,.2);
+
+    font-style:italic;
+
+    animation:verseFade 1s ease;
+}
+
+@keyframes verseFade{
+    from{opacity:0;transform:translateY(10px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+/* BOTONES BIBLIA */
+
+.verseActions{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+}
+
+.verseActions button{
+    padding:8px 20px;
+
+    border:none;
+    border-radius:20px;
+
+    font-weight:bold;
+
+    background:linear-gradient(
+        145deg,
+        gold,
+        #ffeb3b
+    );
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.verseActions button:hover{
+    transform:scale(1.15);
+    box-shadow:0 0 15px gold;
+}
+
+/* CEREMONIA FINAL */
+
+#finalCeremony{
+    position:fixed;
+    inset:0;
+
+    background:radial-gradient(
+        circle,
+        rgba(0,0,0,.85),
+        rgba(0,0,0,.95)
+    );
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:2000;
+
+    animation:fadeIn .6s ease;
+}
+
+/* CAJA CENTRAL */
+
+.ceremonyBox{
+
+    background:linear-gradient(
+        135deg,
+        #1a1a1a,
+        #000
+    );
+
+    padding:40px 50px;
+
+    border-radius:30px;
+
+    text-align:center;
+
+    border:3px solid gold;
+
+    box-shadow:
+        0 0 40px gold,
+        0 0 80px rgba(255,215,0,.5);
+
+    animation:ceremonyPop .7s ease;
+}
+
+@keyframes ceremonyPop{
+    0%{transform:scale(.6);opacity:0}
+    70%{transform:scale(1.1)}
+    100%{transform:scale(1)}
+}
+
+/* TITULO */
+
+#ceremonyTitle{
+    font-size:46px;
+    color:gold;
+
+    text-shadow:0 0 25px gold;
+
+    margin-bottom:15px;
+}
+
+/* VERSO */
+
+#ceremonyVerse{
+    font-size:20px;
+
+    color:#fff9c4;
+
+    font-style:italic;
+
+    margin:15px 0;
+
+    line-height:1.5;
+}
+
+/* GANADOR */
+
+#ceremonyWinner{
+    font-size:32px;
+
+    margin:20px 0;
+
+    font-weight:bold;
+
+    color:white;
+
+    text-shadow:0 0 20px gold;
+}
+
+/* CONTADOR */
+
+#ceremonyCountdown{
+
+    font-size:80px;
+
+    font-weight:bold;
+
+    color:gold;
+
+    text-shadow:0 0 35px gold;
+
+    animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+    0%{transform:scale(1)}
+    50%{transform:scale(1.15)}
+    100%{transform:scale(1)}
+}
+
+/* BARRA DE PODER */
+
+.powerBar{
+    width:90%;
+    height:14px;
+
+    background:rgba(255,255,255,.25);
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin:6px 0 8px;
+
+    box-shadow:inset 0 0 6px rgba(0,0,0,.5);
+}
+
+.powerFill{
+    height:100%;
+    width:100%;
+
+    border-radius:20px;
+
+    transition:width .6s ease;
+
+    box-shadow:0 0 12px currentColor;
+}
+
+/* COLORES */
+
+#bar-rojo{
+    background:#f44336;
+    color:#f44336;
+}
+
+#bar-azul{
+    background:#2196f3;
+    color:#2196f3;
+}
+
+#bar-verde{
+    background:#4caf50;
+    color:#4caf50;
+}
+
+#bar-amarillo{
+    background:#ffeb3b;
+    color:#ffeb3b;
+}
+
+.spiritAura{
+    position:relative;
+    overflow:hidden;
+}
+
+/* Aura sin bloquear botones */
+.spiritAura::before,
+.spiritAura::after{
+    pointer-events:none;
+}
+
+#verseReflection{
+    margin-top:12px;
+    padding:10px 14px;
+
+    background:rgba(255,255,255,.9);
+    border-radius:12px;
+
+    font-size:15px;
+    color:#5d4037;
+
+    box-shadow:inset 0 0 6px rgba(0,0,0,.15);
+
+    animation:verseFade 1s ease;
+}
+
+#verseModal::after{
+
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    background:radial-gradient(
+      circle at top,
+      rgba(255,255,255,.6),
+      transparent 60%
+    );
+
+    animation:lightMove 6s infinite alternate;
+
+    pointer-events:none;
+}
+
+@keyframes lightMove{
+    from{opacity:.4}
+    to{opacity:.9}
+}
+
+.team .buttons{
+    position:relative;
+    z-index:50;
+    pointer-events:auto;
+}
+
+@keyframes auraFloat{
+    0%{opacity:.4; transform:scale(1)}
+    50%{opacity:.9; transform:scale(1.15)}
+    100%{opacity:.4; transform:scale(1)}
+}
+
+.locked .buttons{
+    opacity:.4;
+    pointer-events:none;
+}
+
+.countdownPulse {
+    animation: pulseCount .9s ease;
+}
+
+@keyframes pulseCount {
+    0% { transform:scale(.7); opacity:.5; }
+    50% { transform:scale(1.4); opacity:1; }
+    100% { transform:scale(1); opacity:1; }
+}
+
+/* GAME START EFFECT */
+
+.gameStartFlash{
+    animation: startFlash 1.2s ease;
+}
+
+@keyframes startFlash{
+    0%{
+        filter:brightness(1);
+        transform:scale(1);
+    }
+    40%{
+        filter:brightness(1.6);
+        transform:scale(1.03);
+    }
+    100%{
+        filter:brightness(1);
+        transform:scale(1);
+    }
+}
+
+/* HYPE MODE */
+
+.hypeMode{
+    animation: hypePulse 2s infinite;
+}
+
+@keyframes hypePulse{
+    0%{ filter:brightness(1); }
+    50%{ filter:brightness(1.15); }
+    100%{ filter:brightness(1); }
+}
+
+.missionGlow{
+    animation: missionGlow 2s infinite;
+}
+
+@keyframes missionGlow{
+    0%{ text-shadow:0 0 10px gold; }
+    50%{ text-shadow:0 0 30px gold; }
+    100%{ text-shadow:0 0 10px gold; }
+}
+
+/* ===== DECORACIÓN BIBLIA PRO ===== */
+
+.verseTopBar,
+.verseBottomBar{
+    width:100%;
+    height:6px;
+
+    background:linear-gradient(
+        to right,
+        transparent,
+        gold,
+        #ffeb3b,
+        gold,
+        transparent
+    );
+
+    border-radius:10px;
+
+    margin:12px 0;
+
+    box-shadow:0 0 12px gold;
+}
+
+/* Aura suave sin íconos */
+
+#verseModal::before{
+    content:"";
+
+    position:absolute;
+    inset:-40%;
+
+    background:radial-gradient(
+        circle,
+        rgba(255,215,0,.18),
+        transparent 70%
+    );
+
+    pointer-events:none;
+}
+
+/* Marco interno */
+
+#verseModal{
+    position:relative;
+    overflow:hidden;
+}
+
+/* Efecto respiración */
+
+#verseModal{
+    animation: modalPop .5s ease,
+               breatheGlow 4s ease-in-out infinite;
+}
+
+@keyframes breatheGlow{
+    0%{ box-shadow:0 0 30px gold; }
+    50%{ box-shadow:0 0 70px rgba(255,215,0,.9); }
+    100%{ box-shadow:0 0 30px gold; }
+}
+
+/* Submensaje espiritual */
+
+#verseSub{
+    margin-top:10px;
+
+    font-size:16px;
+    font-weight:bold;
+
+    color:#8d6e63;
+
+    text-shadow:0 0 6px rgba(255,215,0,.6);
+
+    animation: subPulse 2.5s infinite;
+}
+
+@keyframes subPulse{
+    0%{ opacity:.6; }
+    50%{ opacity:1; }
+    100%{ opacity:.6; }
+}
+
+/* Contador espiritual */
+
+#verseStats{
+    margin-top:8px;
+
+    font-size:14px;
+    font-weight:bold;
+
+    color:#5d4037;
+
+    background:rgba(255,255,255,.6);
+
+    padding:6px 10px;
+
+    border-radius:12px;
+
+    display:inline-block;
+
+    box-shadow:0 0 6px rgba(255,215,0,.4);
+}
+
+/* Logo respiración */
+
+@keyframes logoPulse{
+    0%{
+        transform:scale(1);
+        box-shadow:0 0 12px gold;
+    }
+    50%{
+        transform:scale(1.08);
+        box-shadow:
+            0 0 25px gold,
+            0 0 45px rgba(255,215,0,.8);
+    }
+    100%{
+        transform:scale(1);
+        box-shadow:0 0 12px gold;
+    }
+}
+
+/* Giro aura */
+
+@keyframes logoRotate{
+    from{ transform:rotate(0deg); }
+    to{ transform:rotate(360deg); }
+}
+
+/* Logo reacción milagro */
+
+.logoPower{
+    animation: logoPowerFlash .6s ease;
+}
+
+@keyframes logoPowerFlash{
+    0%{
+        transform:scale(1);
+    }
+    50%{
+        transform:scale(1.2);
+        box-shadow:
+            0 0 40px gold,
+            0 0 80px rgba(255,215,0,1);
+    }
+    100%{
+        transform:scale(1);
+    }
+}
+
+/* Evitar que animaciones bloqueen clicks */
+
+.balloonAnim,
+.floatMsg,
+canvas {
+    pointer-events: none !important;
+}
+
+/* HISTORIAL OVERLAY */
+
+#historyOverlay{
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.85);
+    backdrop-filter:blur(8px);
+
+    display:none;
+    justify-content:center;
+    align-items:center;
+
+    z-index:4000;
+
+    animation:fadeIn .4s ease;
+}
+
+/* CAJA */
+
+#historyModal{
+
+    background:linear-gradient(
+        135deg,
+        #fffde7,
+        #fff9c4
+    );
+
+    width:420px;
+    max-width:90%;
+    max-height:70vh;
+
+    padding:25px;
+
+    border-radius:22px;
+
+    border:3px solid gold;
+
+    box-shadow:
+        0 0 35px gold,
+        0 0 70px rgba(255,215,0,.6);
+
+    text-align:center;
+
+    display:flex;
+    flex-direction:column;
+
+    animation:modalPop .5s ease;
+}
+
+/* TITULO */
+
+#historyModal h2{
+
+    color:#6d4c41;
+    text-shadow:0 0 6px gold;
+
+    margin-bottom:12px;
+}
+
+/* LISTA */
+
+#historyList{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:10px;
+
+    background:rgba(255,255,255,.7);
+
+    border-radius:15px;
+
+    box-shadow:inset 0 0 6px rgba(0,0,0,.2);
+
+}
+
+/* ITEM */
+
+.historyItem{
+
+    background:white;
+
+    padding:10px 12px;
+
+    margin-bottom:8px;
+
+    border-radius:12px;
+
+    font-size:15px;
+
+    color:#4e342e;
+
+    text-align:left;
+
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+
+    animation:verseFade .4s ease;
+}
+
+/* BOTON */
+
+#historyModal button{
+
+    margin-top:12px;
+
+    padding:8px 20px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:gold;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+#historyModal button:hover{
+    background:#ffd54f;
+    transform:scale(1.1);
+}
+
+/* RESULTADOS */
+
+#resultOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.92);
+  backdrop-filter:blur(8px);
+
+  display:none;
+  justify-content:center;
+  align-items:center;
+
+  z-index:1800;
+}
+
+#resultBox{
+
+  background:linear-gradient(135deg,#111,#000);
+  border:3px solid gold;
+
+  padding:40px 50px;
+  border-radius:30px;
+
+  width:520px;
+  max-width:90%;
+
+  box-shadow:0 0 50px gold;
+
+  animation:modalPop .7s ease;
+
+  color:white;
+}
+
+#resultBox h1{
+  text-align:center;
+  color:gold;
+  margin-bottom:25px;
+  text-shadow:0 0 20px gold;
+}
+
+/* BARRAS */
+
+.resultBar{
+  margin:15px 0;
+  font-size:20px;
+}
+
+.resultBar span{
+  float:right;
+  font-weight:bold;
+  color:gold;
+}
+
+.resultBar .barFill{
+  height:18px;
+  background:gold;
+  border-radius:20px;
+  width:0%;
+  margin-top:6px;
+
+  transition:width 2.5s ease;
+  box-shadow:0 0 15px currentColor;
+}
+
+/* COLORES */
+
+.rojoBar .barFill{background:#f44336}
+.azulBar .barFill{background:#2196f3}
+.verdeBar .barFill{background:#4caf50}
+.amarilloBar .barFill{background:#ffeb3b}

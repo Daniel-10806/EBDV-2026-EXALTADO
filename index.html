@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>EBDV 2026 - Misión Bíblica</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <div class="bg"></div>
+    <canvas id="game"></canvas>
+
+    <div id="ui">
+
+        <!-- HEADER -->
+        <header>
+
+            <h1>🏆 EBDV 2026 - MISIÓN BÍBLICA</h1>
+
+            <div id="mainLogo">
+                <img src="logo.jpg">
+            </div>
+
+            <div class="top-controls">
+
+                <button onclick="startTimer()" title="Iniciar">
+                    ⏱
+                </button>
+
+                <button onclick="openVerse()" title="Biblia">
+                    📖
+                </button>
+
+                <button onclick="toggleFull()" title="Pantalla completa">
+                    ⛶
+                </button>
+            </div>
+        </header>
+
+        <!-- TIMER -->
+        <div id="timer">01:00</div>
+
+        <!-- LAYOUT -->
+        <div class="layout">
+
+            <!-- PANEL -->
+            <div id="rankingPanel">
+
+                <h3>🏆 Podio</h3>
+
+                <div id="ranking"></div>
+
+                <div class="panelInfo">
+
+                    <p id="statusInfo">🟢 En juego</p>
+
+                    <p id="roundInfo">⏱ 60 segundos</p>
+
+                    <div class="panelStat">
+                        🏅 Líder actual:
+                        <span id="leaderName">Rojo</span>
+                    </div>
+
+                    <div class="panelStat">
+                        📊 Diferencia:
+                        <span id="diffPoints">0</span> pts
+                    </div>
+
+                    <div id="miniVerse">
+                        🙏 “Todo lo puedo en Cristo”
+                    </div>
+                </div>
+            </div>
+
+            <!-- EQUIPOS -->
+            <section class="container">
+                <div class="team rojo">
+                    <h2>❤️ Rojo</h2>
+
+                    <div class="powerBar">
+                        <div class="powerFill" id="bar-rojo"></div>
+                    </div>
+
+                    <div class="balloons" id="rojo"></div>
+
+                    <div class="buttons">
+                        <button onclick="add('rojo',event)">+</button>
+                        <button onclick="remove('rojo',event)">-</button>
+                    </div>
+                </div>
+
+                <div class="team azul">
+                    <h2>💙 Azul</h2>
+
+                    <div class="powerBar">
+                        <div class="powerFill" id="bar-azul"></div>
+                    </div>
+
+                    <div class="balloons" id="azul"></div>
+
+                    <div class="buttons">
+                        <button onclick="add('azul',event)">+</button>
+                        <button onclick="remove('azul',event)">-</button>
+                    </div>
+                </div>
+
+                <div class="team verde">
+                    <h2>💚 Verde</h2>
+
+                    <div class="powerBar">
+                        <div class="powerFill" id="bar-verde"></div>
+                    </div>
+
+                    <div class="balloons" id="verde"></div>
+
+                    <div class="buttons">
+                        <button onclick="add('verde',event)">+</button>
+                        <button onclick="remove('verde',event)">-</button>
+                    </div>
+                </div>
+
+                <div class="team amarillo">
+                    <h2>💛 Amarillo</h2>
+
+                    <div class="powerBar">
+                        <div class="powerFill" id="bar-amarillo"></div>
+                    </div>
+
+                    <div class="balloons" id="amarillo"></div>
+
+                    <div class="buttons">
+                        <button onclick="add('amarillo',event)">+</button>
+                        <button onclick="remove('amarillo',event)">-</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- POPUP -->
+        <div id="popup"></div>
+
+        <!-- PODIO FINAL -->
+
+        <div id="finalPodium">
+
+            <div class="podiumBox first">🥇<br><span id="p1"></span></div>
+            <div class="podiumBox second">🥈<br><span id="p2"></span></div>
+            <div class="podiumBox third">🥉<br><span id="p3"></span></div>
+            <div id="winnerTitle"></div>
+
+        </div>
+
+        <!-- CEREMONIA FINAL -->
+
+        <div id="finalCeremony">
+
+            <div class="ceremonyBox">
+
+                <div id="ceremonyTitle">
+                    🏆 Resultado Final
+                </div>
+
+                <div id="ceremonyWinner"></div>
+
+                <div id="ceremonyVerse"></div>
+
+                <div id="ceremonyCountdown"></div>
+
+            </div>
+
+        </div>
+
+        <!-- MENSAJE CENTRAL -->
+        <div id="centerMsg"></div>
+
+        <!-- BIBLIA MODAL -->
+
+        <div id="verseOverlay">
+
+            <div id="verseModal">
+
+                <div class="verseTopBar"></div>
+
+                <div class="verseHeader">
+                    ✨ Momento con Dios ✨
+                </div>
+
+                <div class="verseIcon">
+                    📖
+                </div>
+
+                <div id="verseText">
+                    “Verso aquí”
+                </div>
+
+                <div id="verseReflection"></div>
+
+                <div id="verseSub">
+                    💛 Recibe esta palabra con fe
+                </div>
+
+                <div id="verseStats">
+                    🙏 Momentos con Dios:
+                    <span id="verseCount">0</span>
+                </div>
+
+                <div class="verseFooter">
+                    “Tu Palabra es luz para nuestro camino” 💛
+                </div>
+
+                <div class="verseActions">
+
+                    <button onclick="closeVerse()">
+                        🙏 Amén
+                    </button>
+
+                    <button onclick="showVerseHistory()">
+                        📜 Historial
+                    </button>
+                </div>
+                <div class="verseBottomBar"></div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+
+        <!-- SCRIPT EXTRA -->
+        <script>
+
+            /* MENSAJE BRILLANTE */
+
+            function showHeaderMsg(text, color) {
+
+                const msg = document.getElementById("message");
+
+                msg.innerText = text;
+                msg.style.color = color;
+
+                msg.classList.remove("flash");
+                void msg.offsetWidth;
+                msg.classList.add("flash");
+
+            }
+        </script>
+
+        <!-- HISTORIAL DE VERSOS -->
+        <div id="historyOverlay">
+
+            <div id="historyModal">
+
+                <h2>📜 Libro de Versos</h2>
+
+                <div id="historyList"></div>
+
+                <button onclick="closeVerseHistory()">✖ Cerrar</button>
+
+            </div>
+
+        </div>
+
+        <!-- RESULTADOS GRAFICO -->
+
+        <div id="resultOverlay">
+
+            <div id="resultBox">
+
+                <h1>📊 Resultados Finales</h1>
+
+                <div class="resultBar rojoBar">
+                    ❤️ Rojo <span></span>
+                    <div class="barFill"></div>
+                </div>
+
+                <div class="resultBar azulBar">
+                    💙 Azul <span></span>
+                    <div class="barFill"></div>
+                </div>
+
+                <div class="resultBar verdeBar">
+                    💚 Verde <span></span>
+                    <div class="barFill"></div>
+                </div>
+
+                <div class="resultBar amarilloBar">
+                    💛 Amarillo <span></span>
+                    <div class="barFill"></div>
+                </div>
+
+            </div>
+
+        </div>
+</body>
+
+</html>
