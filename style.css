@@ -1,8 +1,10 @@
-/* BLOQUEAR SCROLL */
 html,body{
-width:100%;
-height:100%;
-overflow:hidden;
+    width:100%;
+    min-height:100%;
+    overflow-x:hidden;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    background:transparent;
 }
 
 *{
@@ -15,27 +17,39 @@ font-family:'Segoe UI',Arial;
 /* FONDO FIJO */
 
 .bg{
-position:fixed;
-inset:0;
-background:url("fondo.png") center/cover no-repeat;
-z-index:-10;
-filter:brightness(.95);
+    position:fixed;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    background:url("fondo.png") center center / cover no-repeat;
+
+    z-index:-10;
+
+    filter:brightness(.95);
 }
 
 /* CANVAS */
 
 #game{
-position:fixed;
-inset:0;
-z-index:-5;
+    position:fixed;
+    inset:0;
+    z-index:-5;
+    pointer-events:none;
 }
 
 /* UI */
 
 #ui{
-position:relative;
-z-index:5;
-text-align:center;
+    position:relative;
+    z-index:5;
+    text-align:center;
+
+    min-height:100vh;
+    height:auto;
+
+    padding-bottom:80px;
 }
 
 /* HEADER PERFECTO */
@@ -47,7 +61,9 @@ header{
     align-items:center;
     animation: headerGlow 4s ease-in-out infinite;
     padding:12px 30px;
-
+    position:sticky;
+    top:0;
+    z-index:2000;
     background:linear-gradient(
         to right,
         rgba(0,0,0,.7),
@@ -260,7 +276,6 @@ border:1px solid gold;
 }
 
 .rankRow{
-    display:flex;
     justify-content:space-between;
 
     padding:12px 16px;
@@ -733,11 +748,19 @@ box-shadow:0 0 15px #ffeb3b;
 
 .layout{
     display:grid;
-    grid-template-columns:520px 1fr;
-    gap:50px;
+
+    grid-template-columns:
+        minmax(260px,380px)
+        minmax(0,1fr);
+
+    gap:32px;
+
     max-width:1400px;
-    margin:40px auto 0;
-    padding:20px;
+
+    margin:30px auto 0;
+
+    padding:16px;
+
     align-items:flex-start;
 }
 
@@ -822,14 +845,110 @@ animation:balloonPop .8s ease forwards;
 100%{transform:scale(0) translateY(-80px);opacity:0}
 }
 
+
+/* ============================= */
+/* RANKING RESPONSIVE FIX */
+/* ============================= */
+
+#ranking{
+    width:100%;
+    max-width:100%;
+    margin:0 auto;
+    padding:0;
+}
+
+/* FILA BASE */
 .rankRow{
-display:flex;
-justify-content:space-between;
-padding:6px 10px;
-margin:4px 0;
-border-radius:10px;
-background:rgba(255,255,255,.15);
-font-size:16px;
+
+    display:grid;
+
+    grid-template-columns:
+        36px     /* medalla */
+        1fr      /* nombre */
+        50px;    /* puntos */
+
+    align-items:center;
+
+    gap:8px;
+
+    width:100%;
+
+    padding:8px 12px;
+    margin:6px 0;
+
+    border-radius:12px;
+
+    background:linear-gradient(
+        135deg,
+        rgba(255,255,255,.22),
+        rgba(255,255,255,.08)
+    );
+
+    font-size:15px;
+
+    box-sizing:border-box;
+
+    overflow:hidden;
+}
+
+/* MEDALLA */
+.rankRow .medal{
+    text-align:center;
+    font-size:18px;
+}
+
+/* NOMBRE */
+.rankRow .teamName{
+
+    font-weight:600;
+
+    font-size:14px;
+
+    color:white;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+
+    min-width:0;
+}
+
+/* SCORE */
+.rankRow .score{
+
+    text-align:right;
+
+    font-weight:800;
+
+    font-size:14px;
+
+    color:gold;
+
+    white-space:nowrap;
+}
+
+/* MOBILE EXTRA */
+@media (max-width:480px){
+
+    .rankRow{
+
+        grid-template-columns:
+            28px
+            1fr
+            40px;
+
+        padding:6px 8px;
+
+        font-size:13px;
+    }
+
+    .rankRow .teamName{
+        font-size:13px;
+    }
+
+    .rankRow .score{
+        font-size:13px;
+    }
 }
 
 .rankRow span{
@@ -2280,4 +2399,383 @@ canvas {
     line-height:1.4;
 
     word-break:break-word;
+}
+
+/* ============================= */
+/* ===== RESPONSIVE MOBILE ===== */
+/* ============================= */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 1024px){
+
+    .layout{
+        grid-template-columns: 1fr;
+        gap:30px;
+        margin-top:20px;
+    }
+
+    #rankingPanel{
+        transform:none;
+        margin-bottom:20px;
+    }
+
+    .container{
+        display:grid;
+
+        grid-template-columns:
+            repeat(auto-fit, minmax(240px,1fr));
+
+        gap:24px;
+
+        width:100%;
+
+        max-width:960px;
+
+        margin:auto;
+
+        padding:10px 0 30px;
+    }
+
+
+    #timer{
+        font-size:60px;
+        padding:10px 25px;
+    }
+
+    header h1{
+        font-size:22px;
+    }
+
+}
+
+/* Celulares */
+@media (max-width: 768px){
+
+    /* Header */
+    header {
+        grid-template-columns: auto 1fr;
+        grid-auto-rows:auto;
+
+        gap:8px;
+
+        padding:8px 12px;
+
+        height:auto;
+    }
+
+
+    .top-controls{
+        grid-column:1 / -1;
+        justify-content:center;
+        margin-top:8px;
+    }
+
+    header h1{
+        font-size:18px;
+        line-height: 1.2;
+    }
+
+    #mainLogo{
+        width:55px;
+        height:55px;
+        left:0;
+    }
+
+
+    /* Timer */
+    #timer{
+        font-size:42px;
+        padding:8px 20px;
+        margin-top:10px;
+    }
+
+
+    /* Layout principal */
+    .layout{
+        grid-template-columns:1fr;
+        gap:20px;
+        padding:10px;
+        margin-top:15px;
+    }
+
+    /* Ranking */
+    #ranking{
+        max-width:100%;
+        font-size:14px;
+    }
+
+    .rankRow{
+        font-size:14px;
+        grid-template-columns:30px 1fr 45px;
+    }
+
+
+    /* Equipos */
+    .container{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .team{
+        padding:18px;
+    }
+
+    .team h2{
+        font-size:16px;
+        text-align:center;
+    }
+
+
+    /* Globos */
+    .balloons span{
+        font-size:24px;
+    }
+
+
+    /* Botones */
+    .buttons button{
+        width:42px;
+        height:42px;
+        font-size:20px;
+    }
+
+
+    /* Verso modal */
+    #verseModal{
+        width:95%;
+        padding:18px;
+    }
+
+    #verseText{
+        font-size:18px;
+    }
+
+
+    /* Resultados */
+    #resultBox{
+        width:95%;
+        padding:25px;
+    }
+
+    .resultBar{
+        font-size:16px;
+    }
+
+
+    /* Ceremonia */
+    .ceremonyBox{
+        width:95%;
+        padding:25px;
+    }
+
+    #ceremonyTitle{
+        font-size:30px;
+    }
+
+    #ceremonyCountdown{
+        font-size:60px;
+    }
+
+}
+
+
+/* Celulares pequeños */
+@media (max-width: 480px){
+
+    header h1{
+        font-size:16px;
+    }
+
+    #timer{
+        font-size:34px;
+    }
+
+    .team h2{
+        font-size:14px;
+    }
+
+    .rankRow{
+        font-size:13px;
+    }
+
+    .balloons span{
+        font-size:22px;
+    }
+}
+
+/* Scroll bonito */
+
+::-webkit-scrollbar{
+    width:10px;
+}
+
+::-webkit-scrollbar-track{
+    background:rgba(0,0,0,.4);
+}
+
+::-webkit-scrollbar-thumb{
+    background:gold;
+    border-radius:10px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background:#ffd54f;
+}
+
+@media (max-width:600px){
+
+    .team{
+        padding:14px;
+        border-radius:18px;
+    }
+
+    .team h2{
+        font-size:15px;
+        line-height:1.3;
+    }
+
+    .buttons{
+        margin-top:8px;
+    }
+
+    .powerBar{
+        height:12px;
+    }
+
+    .balloons{
+        gap:4px;
+    }
+}
+
+/* HEADER MODO APP EN MOBILE */
+@media (max-width:768px){
+
+    header{
+        position:sticky;
+        top:0;
+
+        padding:6px 10px;
+
+        backdrop-filter:blur(14px);
+    }
+
+    header h1{
+        font-size:17px;
+        text-align:center;
+        padding:2px 0;
+    }
+
+    .top-controls button{
+        width:40px;
+        height:40px;
+        font-size:18px;
+    }
+}
+
+/* TIMER ADAPTATIVO */
+@media (max-width:768px){
+
+    #timer{
+        font-size:clamp(28px,8vw,42px);
+        padding:6px 16px;
+        border-radius:16px;
+    }
+}
+
+/* CARDS MOBILE UX */
+@media (max-width:768px){
+
+    .team{
+        gap:6px;
+        min-height:auto;
+        justify-content:space-between;
+    }
+
+    .team h2{
+        margin-bottom:6px;
+    }
+
+    .balloons{
+        min-height:36px;
+    }
+}
+
+/* RANKING MOBILE COMPACT */
+@media (max-width:600px){
+
+    #rankingPanel{
+        padding:10px;
+    }
+
+    #rankingPanel h3{
+        font-size:22px;
+    }
+
+    .rankRow{
+        padding:6px 8px;
+        gap:6px;
+    }
+
+    .rankRow .teamName{
+        font-size:14px;
+    }
+
+    .rankRow .score{
+        font-size:15px;
+    }
+}
+
+/* ORDEN VERTICAL MOBILE */
+@media (max-width:768px){
+
+    .layout{
+        display:flex;
+        flex-direction:column;
+    }
+
+    #rankingPanel{
+        order:1;
+    }
+
+    .container{
+        order:2;
+    }
+}
+
+/* BOTONES TOUCH FRIENDLY */
+@media (max-width:600px){
+
+    .buttons button{
+        min-width:44px;
+        min-height:44px;
+
+        touch-action:manipulation;
+    }
+}
+
+/* EVITAR ZOOM ACCIDENTAL */
+button,
+input,
+textarea{
+    touch-action:manipulation;
+}
+
+/* LANDSCAPE MODE */
+@media (max-width:900px) and (orientation:landscape){
+
+    header{
+        padding:4px 10px;
+    }
+
+    #timer{
+        margin-top:6px;
+    }
+
+    .container{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .team{
+        padding:14px;
+    }
 }
