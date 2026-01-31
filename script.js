@@ -162,22 +162,30 @@ resize();
 
 let particles = [];
 
-function balloonEffect(x, y) {
+function balloonEffectFromTeam(team) {
 
-    let el = document.createElement("div");
+    const el = document.querySelector("." + team);
 
-    el.className = "balloonAnim";
-    el.innerText = "🎈";
+    if (!el) return;
 
-    el.style.left = x + "px";
-    el.style.top = y + "px";
+    const rect = el.getBoundingClientRect();
 
-    document.body.appendChild(el);
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    let balloon = document.createElement("div");
+
+    balloon.className = "balloonAnim";
+    balloon.innerText = "🎈";
+
+    balloon.style.left = x + "px";
+    balloon.style.top = y + "px";
+
+    document.body.appendChild(balloon);
 
     setTimeout(() => {
-        el.remove();
+        balloon.remove();
     }, 800);
-
 }
 
 function showFloatMsg(text, x, y, color) {
@@ -196,7 +204,20 @@ function showFloatMsg(text, x, y, color) {
     setTimeout(() => {
         el.remove();
     }, 1200);
+}
 
+function showFloatMsgOnTeam(team, text, color) {
+
+    const card = document.querySelector("." + team);
+
+    if (!card) return;
+
+    const rect = card.getBoundingClientRect();
+
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    showFloatMsg(text, x, y, color);
 }
 
 function draw() {
@@ -241,6 +262,13 @@ draw();
 /* GAME */
 
 const MAX = 10;
+
+const teamNames = {
+    rojo: "LEONES DE LA CREACIÓN",
+    azul: "OLAS DEL MAR",
+    verde: "GUARDIANES DEL BOSQUE",
+    amarillo: "ÁGUILAS DEL CIELO"
+};
 
 const ranking = document.getElementById("ranking");
 const message = document.getElementById("message");
@@ -366,7 +394,7 @@ function updatePowerBars() {
 
 /* CONTROLES */
 
-function add(t, e) {
+function add(t) {
 
     if (gameState !== "playing") return;
 
@@ -377,12 +405,11 @@ function add(t, e) {
         sounds.win.currentTime = 0;
         sounds.win.play();
 
-        balloonEffect(e.clientX, e.clientY);
+        balloonEffectFromTeam(t);
 
-        showFloatMsg(
+        showFloatMsgOnTeam(
+            t,
             "+1 Vida 🎈",
-            e.clientX,
-            e.clientY - 25,
             "rgba(76,175,80,.9)"
         );
 
@@ -505,12 +532,12 @@ function startGameWithMission() {
 
     document.getElementById("statusInfo").innerText = "🟢 Jugando";
 
-    // Seleccionar misión
     currentMission = missions[
         Math.floor(Math.random() * missions.length)
     ];
 
     startTimerLoop();
+    render();
 }
 
 function showCountdown(num) {
@@ -542,7 +569,7 @@ function startTimerLoop() {
     }, 1000);
 }
 
-function remove(t, e) {
+function remove(t) {
 
     if (gameState !== "playing") return;
 
@@ -553,12 +580,11 @@ function remove(t, e) {
         sounds.lose.currentTime = 0;
         sounds.lose.play();
 
-        balloonEffect(e.clientX, e.clientY);
+        balloonEffectFromTeam(t);
 
-        showFloatMsg(
+        showFloatMsgOnTeam(
+            t,
             "-1 Vida 🎈",
-            e.clientX,
-            e.clientY - 25,
             "rgba(244,67,54,.9)"
         );
 
@@ -577,12 +603,16 @@ function updateRanking() {
 
     s.forEach((e, i) => {
 
-        let medal = ["🥇", "🥈", "🥉", "🎖"][i];
+        let medal = ["🥇", "🥈", "🥉", "🏅"][i];
+
+        const teamKey = e[0];
+        const teamName = teamNames[teamKey];
 
         html += `
 <div class="rankRow">
-${medal} ${e[0].toUpperCase()}
-<span>${e[1]}</span>
+    <span class="medal">${medal}</span>
+    <span class="teamName">${teamName}</span>
+    <span class="score">${e[1]}</span>
 </div>
 `;
 
@@ -590,14 +620,13 @@ ${medal} ${e[0].toUpperCase()}
 
     ranking.innerHTML = html;
 
-    // Leader info
+    // Líder actual
     document.getElementById("leaderName").innerText =
-        s[0][0].toUpperCase();
+        teamNames[s[0][0]];
 
-    // Difference
+    // Diferencia
     let diff = s[0][1] - s[1][1];
     document.getElementById("diffPoints").innerText = diff;
-
 }
 
 /* LIDER */
@@ -637,7 +666,29 @@ function stopTimer() {
 }
 
 function updateTimer() {
-    timerEl.innerText = `00:${time.toString().padStart(2, 0)}`;
+
+    // Si todavía hay 1 minuto o más → formato MM:SS
+    if (time >= 60) {
+
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+
+        const m = minutes.toString().padStart(2, "0");
+        const s = seconds.toString().padStart(2, "0");
+
+        timerEl.innerText = `${m}:${s}`;
+
+    }
+    // Si ya es menos de 1 minuto → solo segundos
+    else {
+
+        timerEl.innerText = time.toString();
+        if (time <= 10 && time > 0) {
+            timerEl.classList.add("countdownPulse");
+        } else {
+            timerEl.classList.remove("countdownPulse");
+        }
+    }
 }
 
 /* FINAL */
@@ -877,32 +928,32 @@ function showPopup(t) {
 const verses = [
 
     // MISIÓN
-    "Por tanto, id, y haced discípulos - Mateo 28:19",
-    "Vayan por todo el mundo y prediquen - Marcos 16:15",
+    "POR TANTO, ID, Y HACED DISCÍPULOS - MATEO 28:19",
+    "Vayan por todo el mundo y prediquen - MARCOS 16:15",
 
     // LLAMADO
-    "Muchos son llamados, pocos escogidos - Mateo 22:14",
-    "Antes que nacieras te escogí - Jeremías 1:5",
+    "MUCHOS SON LLAMADOS, POCOS ESCOGIDOS - MATEO 22:14",
+    "ANTES QUE NACIERAS TE ESCOGÍ - JEREMÍAS 1:5",
 
     // VALENTÍA
-    "Sé fuerte y valiente - Josué 1:9",
-    "No temas, porque yo estoy contigo - Isaías 41:10",
+    "SÉ FUERTE Y VALIENTE - JOSUÉ 1:9",
+    "NO TENGAS MIEDO, PORQUE YO ESTOY CONTIGO - ISAÍAS 41:10",
 
     // SERVICIO
-    "El que quiera ser grande, sirva - Mateo 20:26",
-    "Sirvan al Señor con alegría - Salmos 100:2",
+    "EL QUE QUIERA SER GRANDE, SIRVA - MATEO 20:26",
+    "SIRVAN AL SEÑOR CON ALEGRÍA - SALMOS 100:2",
 
     // PROPÓSITO
-    "Todo coopera para bien - Romanos 8:28",
-    "Somos hechura suya - Efesios 2:10",
+    "TODO COOPERA PARA BIEN - ROMANOS 8:28",
+    "SOMOS HECHURA SUYA - EFESIOS 2:10",
 
     // FE
-    "Todo es posible para el que cree - Marcos 9:23",
-    "Camina por fe, no por vista - 2 Corintios 5:7",
+    "TODO ES POSIBLE PARA EL QUE CREÉ - MARCOS 9:23",
+    "CAMINA POR FE, NO POR VISTA - 2 CORINTIOS 5:7",
 
     // IDENTIDAD
-    "Somos hijos de Dios - Romanos 8:16",
-    "Linaje escogido - 1 Pedro 2:9"
+    "SOMOS HIJOS DE DIOS - ROMANOS 8:16",
+    "LINAJE ESCOGIDO - 1 PEDRO 2:9"
 ];
 
 function openVerse() {
@@ -925,11 +976,11 @@ function openVerse() {
     verseText.innerText = "“" + v + "”";
 
     const reflections = [
-        "💭 ¿Cómo puedes obedecer este verso hoy?",
-        "🙏 ¿Por quién puedes orar hoy?",
-        "❤️ ¿A quién puedes ayudar?",
-        "✨ ¿Qué te quiere enseñar Dios?",
-        "📖 ¿Cómo aplicarías esto en tu vida?"
+        "💭 ¿CÓMO PUEDES OBECEDER ESTE VERSO HOY?",
+        "🙏 ¿POR QUIÉN PUEDES ORAR HOY?",
+        "❤️ ¿A QUIÉN PUEDES AYUDAR?",
+        "✨ ¿QUÉ TE QUIERE ENSEÑAR DIOS?",
+        "📖 ¿CÓMO APLICARÍAS ESTO EN TU VIDA?"
     ];
 
     document.getElementById("verseReflection").innerText =
@@ -938,24 +989,35 @@ function openVerse() {
     mini.innerText = "🙏 " + v.split("-")[0];
 
     const subs = [
-        "💛 Recibe esta palabra con fe",
-        "✨ Dios te está hablando hoy",
-        "🙏 Guarda esto en tu corazón",
-        "📖 Su palabra es vida",
-        "🌟 Cree y confía"
+        "💛 RECIBE ESTA PALABRA CON FE",
+        "✨ DIOS TE ESTÁ HABLANDO HOY",
+        "🙏 GUARDA ESTO EN TU CORAZÓN",
+        "📖 SU PALABRA ES VIDA",
+        "🌟 CREE Y CONFÍA"
     ];
 
     sub.innerText =
         subs[Math.floor(Math.random() * subs.length)];
 
-    // Guardar historial
+    // Guardar historial SIN duplicados
 
-    verseHistory.unshift(v);
+    // Normalizar verso (ignorar mayúsculas/minúsculas)
+    const normalized = v.trim().toUpperCase();
 
+    // Limpiar duplicados aunque tengan distinto formato
+    verseHistory = verseHistory.filter(
+        item => item.trim().toUpperCase() !== normalized
+    );
+
+    // Guardar versión normalizada
+    verseHistory.unshift(normalized);
+
+    // Limitar a 10
     if (verseHistory.length > 10) {
-        verseHistory.pop();
+        verseHistory.length = 10;
     }
 
+    // Guardar
     localStorage.setItem(
         "verseHistory",
         JSON.stringify(verseHistory)
@@ -1010,8 +1072,6 @@ function checkComeback() {
             "🔥 ¡REMONTADA ÉPICA " + first.toUpperCase() + "! 🔥",
             "rgba(255,61,0,.95)"
         );
-
-        championEffect();
     }
 
     lastPositions = {};
@@ -1079,11 +1139,18 @@ function showVerseHistory() {
         verseHistory.forEach((v, i) => {
 
             let div = document.createElement("div");
-
             div.className = "historyItem";
 
-            div.innerText =
-                (i + 1) + ". " + v;
+            let num = document.createElement("span");
+            num.className = "historyNum";
+            num.innerText = (i + 1) + ".";
+
+            let text = document.createElement("span");
+            text.className = "historyText";
+            text.innerText = v;
+
+            div.appendChild(num);
+            div.appendChild(text);
 
             list.appendChild(div);
         });

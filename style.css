@@ -733,7 +733,7 @@ box-shadow:0 0 15px #ffeb3b;
 
 .layout{
     display:grid;
-    grid-template-columns:320px 1fr;
+    grid-template-columns:520px 1fr;
     gap:50px;
     max-width:1400px;
     margin:40px auto 0;
@@ -753,9 +753,35 @@ box-shadow:0 0 20px gold;
 border:1px solid gold;
 }
 
+/* TITULO PODIO ÉPICO */
 #rankingPanel h3{
-margin-bottom:10px;
-text-shadow:0 0 10px gold;
+    font-size:28px;
+    font-weight:900;
+    letter-spacing:2px;
+
+    color:gold;
+
+    padding:10px 0;
+
+    text-align:center;
+
+    text-shadow:
+        0 0 10px gold,
+        0 0 25px rgba(255,215,0,.9),
+        0 0 45px rgba(255,215,0,.7);
+
+    animation: podiumTitleGlow 2.5s infinite alternate;
+}
+
+@keyframes podiumTitleGlow{
+    from{
+        transform:scale(1);
+        text-shadow:0 0 12px gold;
+    }
+    to{
+        transform:scale(1.08);
+        text-shadow:0 0 35px gold;
+    }
 }
 
 /* BOTONES POR COLOR */
@@ -853,12 +879,32 @@ animation:flashGlow .9s ease;
 margin:6px 0;
 }
 
+/* INFO PODIO PRO */
 .panelStat{
-background:rgba(255,255,255,.12);
-border-radius:10px;
-padding:6px;
-margin-top:6px;
-font-size:13px;
+    background:linear-gradient(
+        135deg,
+        rgba(255,215,0,.25),
+        rgba(255,255,255,.08)
+    );
+
+    border-radius:12px;
+
+    padding:8px 10px;
+
+    margin-top:8px;
+
+    font-size:14px;
+
+    border:1px solid rgba(255,215,0,.6);
+
+    box-shadow:0 0 10px rgba(255,215,0,.4);
+
+    animation: infoGlow 3s infinite alternate;
+}
+
+@keyframes infoGlow{
+    from{box-shadow:0 0 8px gold}
+    to{box-shadow:0 0 18px gold}
 }
 
 #miniVerse{
@@ -866,6 +912,22 @@ margin-top:8px;
 font-style:italic;
 color:gold;
 font-size:13px;
+}
+
+/* LÍDER EN PODIO */
+.rankRow:nth-child(1) .teamName{
+    animation: leaderNameGlow 2s infinite alternate;
+}
+
+@keyframes leaderNameGlow{
+    from{
+        text-shadow:0 0 6px black;
+    }
+    to{
+        text-shadow:
+            0 0 12px gold,
+            0 0 25px gold;
+    }
 }
 
 /* MENSAJE CENTRAL GRANDE */
@@ -1766,3 +1828,456 @@ canvas {
 .azulBar .barFill{background:#2196f3}
 .verdeBar .barFill{background:#4caf50}
 .amarilloBar .barFill{background:#ffeb3b}
+
+/* ===== PODIO PRO ORDENADO ===== */
+
+#ranking{
+    width:100%;
+    max-width:480px;
+    margin:auto;
+}
+
+/* Cada fila como grid */
+.rankRow{
+    display:grid;
+    grid-template-columns: 40px 1fr 60px; /* medal | nombre | score */
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:10px 14px;
+    margin:6px 0;
+
+    border-radius:14px;
+
+    background:linear-gradient(
+        135deg,
+        rgba(255,255,255,.22),
+        rgba(255,255,255,.08)
+    );
+
+    font-size:17px;
+
+    box-shadow:
+        inset 0 0 6px rgba(255,255,255,.15),
+        0 2px 6px rgba(0,0,0,.4);
+
+    transition:.25s;
+}
+
+/* Hover suave */
+.rankRow:hover{
+    transform:scale(1.02);
+    background:rgba(255,215,0,.18);
+}
+
+/* Medalla */
+.rankRow .medal{
+    font-size:20px;
+    text-align:center;
+}
+
+/* Nombre completo */
+.rankRow .teamName{
+    font-size:17px;
+    font-weight:600;
+
+    color:white;
+
+    white-space:normal;
+    overflow:visible;
+
+    text-shadow:0 0 6px rgba(255,215,0,.4);
+}
+
+/* Puntaje */
+.rankRow .score{
+    font-size:18px;
+    font-weight:bold;
+
+    text-align:right;
+
+    color:gold;
+
+    text-shadow:0 0 8px gold;
+}
+
+/* DIFERENCIAR PUESTOS */
+
+/* 1er lugar */
+.rankRow:nth-child(1){
+    background:linear-gradient(135deg,#ffd700,#ffb300);
+    color:black;
+    font-size:19px;
+
+    box-shadow:0 0 25px gold;
+}
+
+/* 2do lugar */
+.rankRow:nth-child(2){
+    background:linear-gradient(135deg,#e0e0e0,#bdbdbd);
+    color:black;
+}
+
+/* 3er lugar */
+.rankRow:nth-child(3){
+    background:linear-gradient(135deg,#cd7f32,#a97142);
+    color:white;
+}
+
+/* 4to lugar */
+.rankRow:nth-child(4){
+    opacity:.75;
+    filter:grayscale(20%);
+}
+
+/* ============================= */
+/* PANEL ESTADO PRO ÉPICO */
+/* ============================= */
+
+.panelInfo{
+    margin-top:12px;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    padding:12px;
+
+    background:rgba(0,0,0,.35);
+
+    border-radius:16px;
+
+    border:1px solid rgba(255,215,0,.6);
+
+    box-shadow:0 0 18px rgba(255,215,0,.5);
+}
+
+/* EN JUEGO / ESTADO */
+
+#statusInfo{
+    font-size:20px;
+    font-weight:900;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+    color:#00ff6a;
+
+    text-shadow:
+        0 0 8px #00ff6a,
+        0 0 18px rgba(0,255,100,.8);
+
+    animation: statusPulse 1.8s infinite;
+}
+
+@keyframes statusPulse{
+    0%{opacity:.7}
+    50%{opacity:1}
+    100%{opacity:.7}
+}
+
+/* TIEMPO */
+
+#roundInfo{
+    font-size:18px;
+    font-weight:800;
+
+    letter-spacing:1.5px;
+
+    text-transform:uppercase;
+
+    color:#4fc3f7;
+
+    text-shadow:
+        0 0 6px #4fc3f7,
+        0 0 15px rgba(79,195,247,.8);
+
+    animation: timeGlow 2s infinite alternate;
+}
+
+@keyframes timeGlow{
+    from{ text-shadow:0 0 8px #4fc3f7; }
+    to{ text-shadow:0 0 20px #4fc3f7; }
+}
+
+/* BLOQUES LÍDER Y DIFERENCIA */
+
+.panelStat{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:10px;
+
+    font-size:15px;
+    font-weight:800;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+    background:linear-gradient(
+        135deg,
+        rgba(255,215,0,.25),
+        rgba(0,0,0,.4)
+    );
+
+    padding:8px 12px;
+
+    border-radius:12px;
+
+    border:1px solid gold;
+
+    box-shadow:
+        0 0 10px rgba(255,215,0,.6),
+        inset 0 0 6px rgba(255,255,255,.15);
+
+    animation: statGlow 3s infinite alternate;
+}
+
+@keyframes statGlow{
+    from{box-shadow:0 0 8px gold}
+    to{box-shadow:0 0 20px gold}
+}
+
+/* NOMBRE DEL LÍDER */
+
+#leaderName{
+    color:#fff176;
+
+    font-weight:900;
+
+    text-shadow:
+        0 0 10px gold,
+        0 0 25px rgba(255,215,0,.8);
+
+    animation: leaderPulse 2s infinite alternate;
+}
+
+@keyframes leaderPulse{
+    from{transform:scale(1)}
+    to{transform:scale(1.08)}
+}
+
+/* DIFERENCIA */
+
+#diffPoints{
+    color:#ffca28;
+
+    font-weight:900;
+
+    text-shadow:
+        0 0 6px gold,
+        0 0 15px rgba(255,215,0,.7);
+}
+
+/* VERSO FINAL */
+
+#miniVerse{
+
+    margin-top:6px;
+
+    font-size:14px;
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+    color:#ffe082;
+
+    background:rgba(0,0,0,.45);
+
+    padding:6px 10px;
+
+    border-radius:12px;
+
+    border:1px solid rgba(255,215,0,.6);
+
+    box-shadow:0 0 10px rgba(255,215,0,.4);
+
+    text-shadow:0 0 6px gold;
+
+    animation: verseGlow 3s infinite alternate;
+}
+
+@keyframes verseGlow{
+    from{opacity:.7}
+    to{opacity:1}
+}
+
+/* PODIO SUBIDO + FLOTANTE CORRECTO */
+
+#rankingPanel{
+    transform: translateY(-80px);
+    animation: floatPanelFixed 5s ease-in-out infinite;
+}
+
+@keyframes floatPanelFixed{
+    0%{ transform:translateY(-80px); }
+    50%{ transform:translateY(-90px); }
+    100%{ transform:translateY(-80px); }
+}
+
+/* ============================= */
+/* CARDS POR COLOR LIMPIOS */
+/* ============================= */
+
+.team{
+    position:relative;
+
+    border-radius:24px;
+
+    padding:22px;
+
+    backdrop-filter:blur(10px);
+
+    transition:.25s ease;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.35);
+}
+
+/* ----------------- */
+/* ROJO */
+/* ----------------- */
+.team.rojo{
+    background:rgba(244,67,54,.18);
+    border:2px solid #f44336;
+
+    box-shadow:0 0 18px rgba(244,67,54,.6);
+}
+
+.team.rojo:hover{
+    background:rgba(244,67,54,.28);
+    box-shadow:0 0 30px #f44336;
+}
+
+/* ----------------- */
+/* AZUL */
+/* ----------------- */
+.team.azul{
+    background:rgba(33,150,243,.18);
+    border:2px solid #2196f3;
+
+    box-shadow:0 0 18px rgba(33,150,243,.6);
+}
+
+.team.azul:hover{
+    background:rgba(33,150,243,.28);
+    box-shadow:0 0 30px #2196f3;
+}
+
+/* ----------------- */
+/* VERDE */
+/* ----------------- */
+.team.verde{
+    background:rgba(76,175,80,.18);
+    border:2px solid #4caf50;
+
+    box-shadow:0 0 18px rgba(76,175,80,.6);
+}
+
+.team.verde:hover{
+    background:rgba(76,175,80,.28);
+    box-shadow:0 0 30px #4caf50;
+}
+
+/* ----------------- */
+/* AMARILLO */
+/* ----------------- */
+.team.amarillo{
+    background:rgba(255,235,59,.2);
+    border:2px solid #ffeb3b;
+
+    box-shadow:0 0 18px rgba(255,235,59,.6);
+}
+
+.team.amarillo:hover{
+    background:rgba(255,235,59,.32);
+    box-shadow:0 0 30px #ffeb3b;
+}
+
+/* ============================= */
+/* TITULO CON COLOR */
+/* ============================= */
+
+.team h2{
+    font-weight:900;
+    letter-spacing:1px;
+}
+
+/* Rojo */
+.team.rojo h2{ color:#ffcdd2; }
+
+/* Azul */
+.team.azul h2{ color:#bbdefb; }
+
+/* Verde */
+.team.verde h2{ color:#c8e6c9; }
+
+/* Amarillo */
+.team.amarillo h2{ color:#fff9c4; }
+
+/* ============================= */
+/* BOTONES CON COLOR */
+/* ============================= */
+
+.team.rojo .buttons button:hover{
+    background:#f44336;
+    color:white;
+}
+
+.team.azul .buttons button:hover{
+    background:#2196f3;
+    color:white;
+}
+
+.team.verde .buttons button:hover{
+    background:#4caf50;
+    color:white;
+}
+
+.team.amarillo .buttons button:hover{
+    background:#ffeb3b;
+    color:black;
+}
+
+.team.leader{
+    animation: leaderColorGlow 1.5s infinite alternate;
+}
+
+@keyframes leaderColorGlow{
+    from{filter:brightness(1)}
+    to{filter:brightness(1.25)}
+}
+
+/* HISTORIAL ORDENADO */
+
+.historyItem{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+}
+
+/* Número fijo */
+.historyNum{
+    min-width:28px;
+    text-align:right;
+
+    font-weight:900;
+    color:#ffb300;
+
+    flex-shrink:0;
+}
+
+/* Texto alineado */
+.historyText{
+    flex:1;
+
+    line-height:1.4;
+
+    word-break:break-word;
+}
