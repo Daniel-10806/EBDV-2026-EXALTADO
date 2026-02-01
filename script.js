@@ -226,8 +226,12 @@ function draw() {
 
     particles.forEach((p, i) => {
 
-        ctx.globalAlpha = p.life / 45;
-        ctx.font = "24px serif";
+        ctx.globalAlpha = p.life / 80;
+
+        ctx.font = "22px serif";
+
+        ctx.fillStyle = p.color || "gold";
+
         ctx.fillText("✨", p.x, p.y);
 
         p.x += p.vx;
@@ -235,7 +239,6 @@ function draw() {
         p.life--;
 
         if (p.life <= 0) particles.splice(i, 1);
-
     });
 
     ctx.globalAlpha = 1;
@@ -257,7 +260,101 @@ function championEffect() {
     }
 }
 
+function teamSpecialEffect(team) {
+
+    const card =
+        document.querySelector(`.${team}`);
+
+    if (!card) return;
+
+    const rect = card.getBoundingClientRect();
+
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    let icon = "✨";
+
+    if (team === "rojo") icon = "🔥";
+    if (team === "azul") icon = "💧";
+    if (team === "verde") icon = "🍃";
+    if (team === "amarillo") icon = "✨";
+
+    for (let i = 0; i < 12; i++) {
+
+        const fx = document.createElement("div");
+
+        fx.className = "teamEffect";
+        fx.innerText = icon;
+
+        fx.style.left =
+            x + (Math.random() * 80 - 40) + "px";
+
+        fx.style.top =
+            y + (Math.random() * 80 - 40) + "px";
+
+        document.body.appendChild(fx);
+
+        setTimeout(() => {
+            fx.remove();
+        }, 1000);
+    }
+}
+
+function confettiFromTeam(team) {
+
+    const card = document.querySelector("." + team);
+    if (!card) return;
+
+    const rect = card.getBoundingClientRect();
+
+    const startX = rect.left + rect.width / 2;
+    const startY = rect.top + rect.height / 2;
+
+    const colors = {
+        rojo: "#f44336",
+        azul: "#2196f3",
+        verde: "#4caf50",
+        amarillo: "#ffeb3b"
+    };
+
+    for (let i = 0; i < 180; i++) {
+
+        particles.push({
+
+            x: startX,
+            y: startY,
+
+            vx: (Math.random() - .5) * 10,
+            vy: (Math.random() - 1.2) * 10,
+
+            life: 80,
+
+            color: colors[team]
+        });
+    }
+}
+
 draw();
+
+function showRoundIntro(callback) {
+
+    const intro =
+        document.getElementById("roundIntro");
+
+    intro.style.display = "flex";
+
+    // Sonido opcional
+    sounds.win.currentTime = 0;
+    sounds.win.play();
+
+    setTimeout(() => {
+
+        intro.style.display = "none";
+
+        if (callback) callback();
+
+    }, 2500);
+}
 
 /* GAME */
 
@@ -343,6 +440,7 @@ function render() {
     highlightLeader();
     updateControlsLock();
     updateHypeMode();
+    checkMiniGameTrigger();
 }
 
 function updateControlsLock() {
@@ -392,6 +490,48 @@ function updatePowerBars() {
     }
 }
 
+function hitEffect(team, type) {
+
+    const card =
+        document.querySelector(`.${team}`);
+
+    if (!card) return;
+
+    // Shake
+    card.classList.add("hitShake");
+
+    // Flash
+    card.classList.add("hitFlash");
+
+    setTimeout(() => {
+        card.classList.remove("hitShake", "hitFlash");
+    }, 400);
+
+
+    // Explosión visual
+    const rect = card.getBoundingClientRect();
+
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    const burst = document.createElement("div");
+
+    burst.className = "hitBurst";
+
+    burst.innerText =
+        type === "add" ? "✨🎈" : "💥🎈";
+
+    burst.style.left = x + "px";
+    burst.style.top = y + "px";
+
+    document.body.appendChild(burst);
+
+    setTimeout(() => {
+        burst.remove();
+    }, 600);
+
+}
+
 /* CONTROLES */
 
 function add(t) {
@@ -415,6 +555,7 @@ function add(t) {
 
         updateStreak(t);
         perseveranceBonus(t);
+        hitEffect(t, "add");
         render();
         flashTeam(t);
     }
@@ -461,7 +602,7 @@ function miracleEvent() {
     );
 
     flashLogo();
-
+    teamSpecialEffect(t);
     render();
 }
 
@@ -506,8 +647,6 @@ function startCountdown() {
     // Mensaje puente
     queueMsg("⚔️ ¡PREPÁRENSE!", "rgba(255,193,7,.95)", 1200);
 
-    queueMsg("🔥 ¡EMPIEZA! 🔥", "rgba(76,175,80,.95)", 1400);
-
     setTimeout(() => {
         startGameWithMission();
     }, 6200);
@@ -515,29 +654,33 @@ function startCountdown() {
 
 function startGameWithMission() {
 
-    cleanEffects();
+    showRoundIntro(() => {
 
-    document.body.classList.add("gameStartFlash");
+        cleanEffects();
 
-    setTimeout(() => {
-        document.body.classList.remove("gameStartFlash");
-    }, 1200);
+        document.body.classList.add("gameStartFlash");
 
-    gameState = "playing";
+        setTimeout(() => {
+            document.body.classList.remove("gameStartFlash");
+        }, 1200);
 
-    updateControlsLock();
+        gameState = "playing";
 
-    time = 60;
-    updateTimer();
+        updateControlsLock();
 
-    document.getElementById("statusInfo").innerText = "🟢 Jugando";
+        time = 60;
+        updateTimer();
 
-    currentMission = missions[
-        Math.floor(Math.random() * missions.length)
-    ];
+        document.getElementById("statusInfo").innerText = "🟢 Jugando";
 
-    startTimerLoop();
-    render();
+        currentMission = missions[
+            Math.floor(Math.random() * missions.length)
+        ];
+
+        startTimerLoop();
+        render();
+
+    });
 }
 
 function showCountdown(num) {
@@ -588,7 +731,10 @@ function remove(t) {
             "rgba(244,67,54,.9)"
         );
 
+        hitEffect(t, "remove");
+
         render();
+
     }
 }
 
@@ -684,9 +830,14 @@ function updateTimer() {
 
         timerEl.innerText = time.toString();
         if (time <= 10 && time > 0) {
+
             timerEl.classList.add("countdownPulse");
+            document.body.classList.add("panicMode");
+
         } else {
+
             timerEl.classList.remove("countdownPulse");
+            document.body.classList.remove("panicMode");
         }
     }
 }
@@ -706,17 +857,18 @@ function finishGame() {
         .sort((a, b) => b[1] - a[1]);
 
     sounds.victory.play();
+    teamSpecialEffect(s[0][0]);
 
     // Campeón
     let max = s[0][1];
 
     let winners = s
         .filter(e => e[1] === max)
-        .map(e => e[0].toUpperCase());
+        .map(e => teamNames[e[0]]);
 
     let champ =
         winners.length > 1
-            ? "EMPATE: " + winners.join(" & ")
+            ? "EMPATE: " + winners.slice(0, -1).join(", ") + " y " + winners.slice(-1)
             : "CAMPEÓN: " + winners[0];
 
     addHistory("Ganó " + champ);
@@ -1198,3 +1350,393 @@ function showResultChart(callback) {
 
     }, 8000);
 }
+
+/* =====================
+   MINI GAME SYSTEM
+===================== */
+
+const miniGames = ["quiz", "order"];
+
+let currentAnswer = "";
+
+/* Abrir juego */
+
+function openMiniGame() {
+
+    if (gameState !== "playing") return;
+
+    const overlay =
+        document.getElementById("miniGameOverlay");
+
+    overlay.style.display = "flex";
+
+    let game =
+        miniGames[Math.floor(Math.random() * 2)];
+
+    if (game === "quiz") startQuiz();
+    if (game === "order") startOrder();
+}
+
+
+/* Cerrar */
+
+function closeMiniGame() {
+
+    document.getElementById("miniGameOverlay")
+        .style.display = "none";
+}
+
+
+/* =====================
+   QUIZ
+===================== */
+
+const quizData = [
+
+    {
+        q: "¿QUIÉN CONSTRUYÓ EL ARCA?",
+        o: ["MOISÉS", "NOÉ", "DAVID"],
+        a: "NOÉ"
+    },
+
+    {
+        q: "DÓNDE NACIÓ JESÚS?",
+        o: ["JERUSALÉN", "BELÉN", "NAZARET"],
+        a: "BELÉN"
+    },
+
+    {
+        q: "¿CUÁNTOS DISCÍPULOS TUVO JESÚS?",
+        o: ["10", "12", "15"],
+        a: "12"
+    }
+];
+
+function startQuiz() {
+
+    let q =
+        quizData[Math.floor(Math.random() * quizData.length)];
+
+    currentAnswer = q.a;
+
+    document.getElementById("miniGameTitle")
+        .innerText = "❓ PREGUNTA BÍBLICA";
+
+    document.getElementById("miniGameContent")
+        .innerText = q.q;
+
+    let ops = "";
+
+    q.o.forEach(o => {
+
+        ops += `
+        <button onclick="checkMiniAnswer('${o}')">
+            ${o}
+        </button>
+        `;
+
+    });
+
+    document.getElementById("miniGameOptions")
+        .innerHTML = ops;
+}
+
+
+/* =====================
+   ORDER VERSE
+===================== */
+
+const verseOrder = [
+    "TODO",
+    "LO",
+    "PUEDO",
+    "EN",
+    "CRISTO"
+];
+
+let orderTemp = [];
+
+function startOrder() {
+
+    document.getElementById("miniGameTitle")
+        .innerText = "🧩 ORDENA EL VERSO";
+
+    document.getElementById("miniGameContent")
+        .innerText = "Arrastra y ordena:";
+
+    let mix = [...verseOrder]
+        .sort(() => Math.random() - .5);
+
+    let html = `<div class="orderZone">`;
+
+    mix.forEach(w => {
+
+        html += `
+          <div class="orderItem" draggable="true">
+            ${w}
+          </div>
+        `;
+    });
+
+    html += `</div>
+    <button id="checkOrderBtn">
+        ✅ CONFIRMAR
+    </button>`;
+
+    document.getElementById("miniGameOptions")
+        .innerHTML = html;
+
+    enableDragOrder();
+}
+
+function pickWord(w) {
+
+    orderTemp.push(w);
+
+    if (orderTemp.length === verseOrder.length) {
+
+        if (
+            orderTemp.join(" ")
+            ===
+            verseOrder.join(" ")
+        ) {
+
+            winMiniGame();
+
+        } else {
+
+            loseMiniGame();
+
+        }
+    }
+}
+
+
+/* =====================
+   RESULT
+===================== */
+
+function checkMiniAnswer(ans) {
+
+    if (ans === currentAnswer) {
+
+        winMiniGame();
+
+    } else {
+
+        loseMiniGame();
+
+    }
+}
+
+function winMiniGame() {
+
+    closeMiniGame();
+
+    if (selectedTeam) {
+
+        teams[selectedTeam] =
+            Math.min(MAX, teams[selectedTeam] + 3);
+
+        showFloatMsgOnTeam(
+            selectedTeam,
+            "✨ +3 BENDICIÓN DIVINA 🙏🎈",
+            "gold"
+        );
+
+        sounds.win.play();
+
+        confettiFromTeam(selectedTeam);
+        teamSpecialEffect(selectedTeam);
+    }
+
+    resetGodMode();
+
+    render();
+}
+
+function loseMiniGame() {
+
+    closeMiniGame();
+
+    showPopup("🙏 Sigue confiando, Dios pelea por ti");
+
+    resetGodMode();
+}
+
+function resetGodMode() {
+
+    miniGameActive = false;
+    selectedTeam = null;
+
+    document.body.classList.remove("hypeMode");
+}
+
+/* =====================
+   MODO DIOS - MINI GAME
+===================== */
+
+let miniGameActive = false;
+let selectedTeam = null;
+
+function checkMiniGameTrigger() {
+
+    if (gameState !== "playing") return;
+    if (miniGameActive) return;
+
+    // Buscar equipo en peligro
+    let weakTeams = Object.keys(teams)
+        .filter(t => teams[t] <= 5);
+
+    if (weakTeams.length === 0) return;
+
+    // Elegir el más bajo
+    weakTeams.sort((a, b) => teams[a] - teams[b]);
+
+    selectedTeam = weakTeams[0];
+
+    activateGodMode();
+}
+
+
+function activateGodMode() {
+
+    miniGameActive = true;
+
+    document.body.classList.add("hypeMode");
+
+    flashTeam(selectedTeam);
+
+    queueMsg("✨ AYUDA ACTIVADA ✨", "gold", 1800);
+    queueMsg(
+        "🙏 " + teamNames[selectedTeam] + " RECIBE BENDICIÓN",
+        "rgba(255,215,0,.95)",
+        2000
+    );
+
+    setTimeout(() => {
+
+        openMiniGame();
+
+    }, 2500);
+}
+
+/* =====================
+   DRAG SYSTEM
+===================== */
+
+function enableDragOrder() {
+
+    const items =
+        document.querySelectorAll(".orderItem");
+
+    let dragged = null;
+
+    items.forEach(item => {
+
+        item.addEventListener("dragstart", () => {
+
+            dragged = item;
+            item.classList.add("dragging");
+
+        });
+
+        item.addEventListener("dragend", () => {
+
+            item.classList.remove("dragging");
+            dragged = null;
+
+        });
+
+        item.addEventListener("dragover", e => {
+            e.preventDefault();
+        });
+
+        item.addEventListener("drop", () => {
+
+            if (!dragged) return;
+
+            const parent = item.parentNode;
+
+            const nodes =
+                [...parent.children];
+
+            const from =
+                nodes.indexOf(dragged);
+
+            const to =
+                nodes.indexOf(item);
+
+            if (from < to) {
+                parent.insertBefore(
+                    dragged,
+                    item.nextSibling
+                );
+            } else {
+                parent.insertBefore(
+                    dragged,
+                    item
+                );
+            }
+        });
+    });
+
+    document.getElementById("checkOrderBtn")
+        .onclick = checkOrderResult;
+}
+
+function checkOrderResult() {
+
+    const items =
+        document.querySelectorAll(".orderItem");
+
+    let result = [];
+
+    items.forEach(i => {
+        result.push(i.innerText.trim());
+    });
+
+    if (
+        result.join(" ")
+        ===
+        verseOrder.join(" ")
+    ) {
+        winMiniGame();
+    } else {
+        loseMiniGame();
+    }
+}
+
+/* =====================
+   GOD RULES
+===================== */
+
+function closeRules() {
+
+    const overlay = document.getElementById("rulesOverlay");
+    const box = document.getElementById("rulesBox");
+
+    /* Activar animación salida */
+    overlay.classList.add("hide");
+    box.classList.add("exit");
+
+    /* Esperar animación antes de ocultar */
+    setTimeout(() => {
+
+        overlay.style.display = "none";
+
+        /* Reset clases */
+        overlay.classList.remove("hide");
+        box.classList.remove("exit");
+
+        queueMsg("✨ BIENVENIDOS ✨", "gold", 2000);
+
+    }, 700);
+}
+
+window.addEventListener("load", () => {
+
+    document.getElementById("rulesOverlay")
+        .style.display = "flex";
+
+});

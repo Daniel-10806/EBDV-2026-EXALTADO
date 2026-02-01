@@ -2779,3 +2779,917 @@ textarea{
         padding:14px;
     }
 }
+
+#miniGameOverlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+#miniGameBox{
+    background:#fff;
+    padding:25px;
+    border-radius:15px;
+    width:90%;
+    max-width:450px;
+    text-align:center;
+}
+
+#miniGameBox h2{
+    margin-bottom:15px;
+}
+
+#miniGameContent{
+    font-size:18px;
+    margin:15px 0;
+}
+
+#miniGameOptions button{
+    display:block;
+    width:100%;
+    margin:8px 0;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#ffc107;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* MINI GAME PRO */
+
+#miniGameBox{
+    background:linear-gradient(145deg,#fff,#fff9e6);
+    border:3px solid gold;
+    box-shadow:0 0 25px rgba(255,193,7,.6);
+    animation:zoomIn .4s ease;
+}
+
+@keyframes zoomIn{
+    from{transform:scale(.7);opacity:0}
+    to{transform:scale(1);opacity:1}
+}
+
+#miniGameTitle{
+    color:#ff9800;
+    text-shadow:0 0 8px gold;
+}
+
+#miniGameOptions button{
+    background:linear-gradient(to right,#ffd54f,#ffca28);
+    transition:.2s;
+}
+
+#miniGameOptions button:hover{
+    transform:scale(1.05);
+    background:#ffc107;
+}
+
+/* =====================
+   MODO DIOS VISUAL
+===================== */
+
+body.hypeMode #miniGameBox{
+    animation: godGlow 2s infinite alternate;
+}
+
+@keyframes godGlow{
+    from{
+        box-shadow:
+        0 0 25px gold,
+        0 0 40px rgba(255,215,0,.7);
+    }
+    to{
+        box-shadow:
+        0 0 60px gold,
+        0 0 120px rgba(255,215,0,1);
+    }
+}
+
+body.hypeMode #miniGameTitle{
+    animation: godText 1.5s infinite alternate;
+}
+
+@keyframes godText{
+    from{color:#ff9800}
+    to{color:gold}
+}
+
+body.hypeMode #miniGameOverlay{
+    backdrop-filter:blur(12px);
+}
+
+/* =====================
+   MINI GAME ULTRA PRO
+===================== */
+
+#miniGameBox{
+    position:relative;
+
+    background:linear-gradient(
+        135deg,
+        #fffdf5,
+        #fff8d6
+    );
+
+    border-radius:22px;
+
+    padding:30px 28px;
+
+    box-shadow:
+        0 0 30px gold,
+        0 0 80px rgba(255,215,0,.6);
+
+    overflow:hidden;
+}
+
+/* Halo animado */
+
+#miniGameBox::before{
+    content:"";
+
+    position:absolute;
+    inset:-40%;
+
+    background:radial-gradient(
+        circle,
+        rgba(255,215,0,.25),
+        transparent 70%
+    );
+
+    animation:miniHalo 6s infinite linear;
+
+    pointer-events:none;
+}
+
+@keyframes miniHalo{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+}
+
+/* Titulo */
+
+#miniGameTitle{
+    font-size:26px;
+    font-weight:900;
+
+    letter-spacing:1px;
+
+    color:#ff9800;
+
+    margin-bottom:14px;
+
+    text-shadow:
+        0 0 12px gold,
+        0 0 25px rgba(255,215,0,.7);
+}
+
+/* Pregunta */
+
+#miniGameContent{
+    font-size:20px;
+
+    background:rgba(255,255,255,.8);
+
+    padding:16px 18px;
+
+    border-radius:14px;
+
+    margin-bottom:16px;
+
+    box-shadow:inset 0 0 8px rgba(0,0,0,.15);
+
+    font-weight:600;
+}
+
+/* Botones */
+
+#miniGameOptions button{
+
+    border-radius:14px;
+
+    font-size:18px;
+
+    padding:12px 16px;
+
+    margin:10px 0;
+
+    background:linear-gradient(
+        145deg,
+        #ffd54f,
+        #ffb300
+    );
+
+    box-shadow:0 4px 10px rgba(0,0,0,.3);
+
+    transition:.2s;
+}
+
+#miniGameOptions button:hover{
+    transform:scale(1.08);
+
+    background:#ffc107;
+
+    box-shadow:0 0 18px gold;
+}
+
+/* Cerrar */
+
+#miniGameBox button{
+    margin-top:12px;
+
+    background:#e53935;
+
+    color:white;
+
+    font-weight:800;
+
+    border-radius:18px;
+
+    padding:8px 18px;
+}
+
+#miniGameBox button:hover{
+    background:#f44336;
+}
+
+/* =====================
+   DRAG ORDER GAME
+===================== */
+
+.orderZone{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.orderItem{
+    padding:12px 16px;
+    background:linear-gradient(145deg,#ffd54f,#ffb300);
+    border-radius:14px;
+    font-weight:900;
+    cursor:grab;
+    box-shadow:0 3px 8px rgba(0,0,0,.3);
+    user-select:none;
+    transition:.2s;
+}
+
+.orderItem:active{
+    cursor:grabbing;
+    transform:scale(1.05);
+}
+
+.orderItem.dragging{
+    opacity:.5;
+}
+
+#checkOrderBtn{
+    margin-top:14px;
+    background:#4caf50;
+    color:white;
+    border:none;
+    border-radius:14px;
+    padding:10px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+#checkOrderBtn:hover{
+    background:#66bb6a;
+}
+
+/* =====================
+   RULES GOD MODE
+===================== */
+
+/* ===== SALIDA REGLAS ===== */
+
+/* OVERLAY REGLAS - CENTRADO REAL */
+
+#rulesOverlay{
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.85);
+    backdrop-filter:blur(10px);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    animation:fadeIn .4s ease;
+    z-index:5000;
+}
+
+#rulesOverlay.hide{
+    animation: rulesFadeOut .6s ease forwards;
+}
+
+#rulesBox.exit{
+    animation: rulesExit .7s ease forwards;
+}
+
+@keyframes rulesFadeOut{
+    from{opacity:1}
+    to{opacity:0}
+}
+
+@keyframes rulesExit{
+    0%{
+        transform:scale(1) translateY(0);
+        opacity:1;
+    }
+    50%{
+        transform:scale(1.1) translateY(-40px);
+    }
+    100%{
+        transform:scale(.6) translateY(-200px);
+        opacity:0;
+    }
+}
+
+/* =============================
+   INSTRUCCIONES PRO
+============================= */
+
+#rulesBox{
+    max-width:520px;
+    width:90%;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    gap:25px;
+}
+
+#rulesBox{
+    max-width:520px;
+    width:92%;
+
+    background:linear-gradient(
+        135deg,
+        rgba(20,20,20,.95),
+        rgba(0,0,0,.95)
+    );
+
+    padding:28px 26px;
+
+    border-radius:28px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    gap:22px;
+
+    border:3px solid gold;
+
+    box-shadow:
+        0 0 35px gold,
+        0 0 80px rgba(255,215,0,.6);
+}
+
+/* HEADER */
+
+.rulesHeader{
+
+    font-size:32px;
+    font-weight:900;
+
+    color:gold;
+
+    text-align:center;
+
+    letter-spacing:1.5px;
+
+    text-shadow:
+        0 0 12px gold,
+        0 0 30px rgba(255,215,0,.9);
+
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.rulesHeader span{
+    font-size:16px;
+    font-weight:600;
+
+    color:#ffe082;
+
+    letter-spacing:1px;
+
+    opacity:.9;
+}
+
+/* LISTA */
+
+.rulesList{
+
+    width:100%;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:14px;
+}
+
+/* ITEM */
+
+.ruleItem{
+
+    display:grid;
+
+    grid-template-columns:48px 1fr;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:14px 18px;
+
+    border-radius:16px;
+
+    background:linear-gradient(
+        135deg,
+        rgba(255,215,0,.22),
+        rgba(255,255,255,.05)
+    );
+
+    border:1px solid rgba(255,215,0,.6);
+
+    box-shadow:
+        inset 0 0 6px rgba(255,255,255,.15),
+        0 4px 10px rgba(0,0,0,.4);
+
+    animation:ruleFade .6s ease;
+}
+
+/* ÍCONO */
+
+.ruleIcon{
+
+    font-size:26px;
+
+    width:42px;
+    height:42px;
+    animation: iconFloat 2.2s ease-in-out infinite;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:rgba(255,215,0,.2);
+
+    box-shadow:0 0 10px gold;
+}
+
+/* Movimiento suave */
+@keyframes iconFloat{
+    0%{
+        transform: translateY(0) scale(1);
+    }
+    50%{
+        transform: translateY(-6px) scale(1.08);
+    }
+    100%{
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* TEXTO */
+
+.ruleText{
+
+    font-size:18px;
+    font-weight:700;
+
+    color:white;
+
+    line-height:1.3;
+
+    text-shadow:0 0 6px rgba(255,215,0,.4);
+}
+
+/* BOTÓN */
+
+.rulesBtn{
+
+    margin-top:10px;
+
+    padding:12px 36px;
+
+    border:none;
+
+    border-radius:24px;
+
+    background:linear-gradient(
+        145deg,
+        gold,
+        #ffca28
+    );
+
+    font-size:20px;
+
+    font-weight:900;
+
+    letter-spacing:1px;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 0 18px gold,
+        0 0 35px rgba(255,215,0,.8);
+
+    transition:.25s;
+}
+
+.rulesBtn:hover{
+    transform:scale(1.1);
+
+    background:#ffd54f;
+
+    box-shadow:
+        0 0 25px gold,
+        0 0 60px rgba(255,215,0,1);
+}
+
+/* ANIMACIÓN ENTRADA */
+
+@keyframes ruleFade{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ICONO AYUDAR - NEUTRAL */
+
+.specialHelp{
+    background:linear-gradient(
+        135deg,
+        rgba(255,105,180,.25),
+        rgba(255,255,255,.08)
+    );
+}
+
+.helpIcon{
+    background:linear-gradient(
+        145deg,
+        #ff4081,
+        #ff80ab
+    );
+
+    box-shadow:
+        0 0 12px #ff4081,
+        0 0 25px rgba(255,64,129,.7);
+
+    animation: helpPulse 1.8s infinite;
+}
+
+@keyframes helpPulse{
+    0%{ transform:scale(1); }
+    50%{ transform:scale(1.25); }
+    100%{ transform:scale(1); }
+}
+
+/* ANIMACIÓN ÉPICA REGLAS */
+
+#rulesBox{
+    animation:
+        rulesDrop 1.2s ease,
+        rulesBreath 4s infinite ease-in-out;
+}
+
+/* Caída celestial */
+@keyframes rulesDrop{
+    0%{
+        transform:translateY(-200px) scale(.6);
+        opacity:0;
+    }
+    60%{
+        transform:translateY(30px) scale(1.1);
+    }
+    100%{
+        transform:translateY(0) scale(1);
+        opacity:1;
+    }
+}
+
+/* Respiración divina */
+@keyframes rulesBreath{
+    0%{
+        box-shadow:
+            0 0 30px gold,
+            0 0 60px rgba(255,215,0,.6);
+    }
+    50%{
+        box-shadow:
+            0 0 60px gold,
+            0 0 120px rgba(255,215,0,1);
+    }
+    100%{
+        box-shadow:
+            0 0 30px gold,
+            0 0 60px rgba(255,215,0,.6);
+    }
+}
+
+/* Items aparecen en cascada */
+
+.ruleItem{
+    opacity:0;
+    animation: ruleCascade .7s ease forwards;
+}
+
+.ruleItem:nth-child(1){ animation-delay:.3s }
+.ruleItem:nth-child(2){ animation-delay:.5s }
+.ruleItem:nth-child(3){ animation-delay:.7s }
+.ruleItem:nth-child(4){ animation-delay:.9s }
+.ruleItem:nth-child(5){ animation-delay:1.1s }
+
+@keyframes ruleCascade{
+    from{
+        opacity:0;
+        transform:translateX(-40px);
+    }
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+}
+
+/* HEADER CON TEXTO */
+
+.iconBtn{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+
+    font-size:11px;
+    font-weight:800;
+
+    color:#ffe082;
+
+    text-shadow:0 0 6px gold;
+
+    letter-spacing:.5px;
+}
+
+/* Animación flotante */
+
+.iconBtn span{
+    animation: labelFloat 2.5s infinite ease-in-out;
+}
+
+@keyframes labelFloat{
+    0%{ transform:translateY(0); }
+    50%{ transform:translateY(-3px); }
+    100%{ transform:translateY(0); }
+}
+
+/* Hover conjunto */
+
+.iconBtn:hover{
+    transform:scale(1.1);
+}
+
+.iconBtn:hover span{
+    color:gold;
+}
+
+/* =========================
+   INTRO CINEMATOGRÁFICA
+========================= */
+
+#roundIntro{
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.95);
+
+    display:none;
+    justify-content:center;
+    align-items:center;
+
+    z-index:99999;
+}
+
+.introBox{
+    text-align:center;
+
+    animation:introZoom 1.5s ease;
+}
+
+.introTitle{
+    font-size:72px;
+    font-weight:900;
+
+    color:gold;
+
+    text-shadow:
+        0 0 30px gold,
+        0 0 60px rgba(255,215,0,.8);
+}
+
+.introSub{
+    margin-top:15px;
+
+    font-size:28px;
+    letter-spacing:3px;
+
+    color:white;
+
+    text-shadow:0 0 15px gold;
+}
+
+@keyframes introZoom{
+    0%{
+        transform:scale(.3);
+        opacity:0;
+    }
+    50%{
+        transform:scale(1.2);
+    }
+    100%{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+/* =========================
+   AURA DIVINA LÍDER
+========================= */
+
+.team.leader{
+    position:relative;
+    z-index:5;
+}
+
+.team.leader::before{
+    content:"";
+    position:absolute;
+
+    inset:-12px;
+
+    border-radius:28px;
+
+    background:
+      radial-gradient(
+        circle,
+        rgba(255,215,0,.35),
+        transparent 70%
+      );
+
+    filter:blur(8px);
+
+    animation:auraPulse 1.8s infinite;
+}
+
+.team.leader::after{
+    content:"";
+    position:absolute;
+
+    inset:-6px;
+
+    border-radius:22px;
+
+    border:2px solid gold;
+
+    box-shadow:
+      0 0 15px gold,
+      0 0 30px rgba(255,215,0,.8);
+
+    animation:auraRotate 4s linear infinite;
+}
+
+@keyframes auraPulse{
+    0%{opacity:.4}
+    50%{opacity:1}
+    100%{opacity:.4}
+}
+
+@keyframes auraRotate{
+    0%{transform:rotate(0deg)}
+    100%{transform:rotate(360deg)}
+}
+
+/* =========================
+   MODO TENSIÓN FINAL
+========================= */
+
+.panicMode{
+    animation: panicPulse 1s infinite;
+}
+
+@keyframes panicPulse{
+    0%{
+        filter:brightness(1) saturate(1);
+    }
+    50%{
+        filter:brightness(1.25) saturate(1.4);
+    }
+    100%{
+        filter:brightness(1) saturate(1);
+    }
+}
+
+/* Parpadeo rojo suave */
+
+.panicMode::before{
+    content:"";
+    position:fixed;
+    inset:0;
+
+    background:rgba(255,0,0,.08);
+
+    pointer-events:none;
+
+    animation: panicFlash .8s infinite;
+
+    z-index:999;
+}
+
+@keyframes panicFlash{
+    0%{opacity:.1}
+    50%{opacity:.35}
+    100%{opacity:.1}
+}
+
+/* =========================
+   GLOBOS VIVOS
+========================= */
+
+.balloons span{
+    display:inline-block;
+
+    animation: balloonFloat 3.5s ease-in-out infinite;
+
+    will-change: transform;
+}
+
+/* Variación para que no floten igual */
+
+.balloons span:nth-child(odd){
+    animation-duration: 4.2s;
+}
+
+.balloons span:nth-child(3n){
+    animation-duration: 3s;
+}
+
+.balloons span:nth-child(4n){
+    animation-duration: 5s;
+}
+
+/* Movimiento natural */
+
+@keyframes balloonFloat{
+    0%{
+        transform:translateY(0) rotate(0deg);
+    }
+    50%{
+        transform:translateY(-10px) rotate(3deg);
+    }
+    100%{
+        transform:translateY(0) rotate(0deg);
+    }
+}
+
+/* =========================
+   EFECTOS POR EQUIPO
+========================= */
+
+.teamEffect{
+    position:fixed;
+    pointer-events:none;
+    font-size:26px;
+    z-index:99999;
+
+    animation: teamFx 1s ease forwards;
+}
+
+@keyframes teamFx{
+    0%{
+        transform:scale(.5);
+        opacity:0;
+    }
+    30%{
+        transform:scale(1.4);
+        opacity:1;
+    }
+    100%{
+        transform:scale(2);
+        opacity:0;
+    }
+}

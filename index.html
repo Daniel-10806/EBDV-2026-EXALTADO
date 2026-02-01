@@ -26,17 +26,33 @@
 
             <div class="top-controls">
 
-                <button onclick="startTimer()" title="Iniciar">
-                    ⏱
-                </button>
+                <div class="iconBtn">
+                    <button onclick="startTimer()">
+                        ⏱
+                    </button>
+                    <span>INICIAR</span>
+                </div>
 
-                <button onclick="openVerse()" title="Biblia">
-                    📖
-                </button>
+                <div class="iconBtn">
+                    <button onclick="openVerse()">
+                        📖
+                    </button>
+                    <span>BIBLIA</span>
+                </div>
 
-                <button onclick="toggleFull()" title="Pantalla completa">
-                    ⛶
-                </button>
+                <div class="iconBtn">
+                    <button onclick="openMiniGame()">
+                        🎮
+                    </button>
+                    <span>JUEGO</span>
+                </div>
+
+                <div class="iconBtn">
+                    <button onclick="toggleFull()">
+                        ⛶
+                    </button>
+                    <span>PANTALLA</span>
+                </div>
             </div>
         </header>
 
@@ -295,6 +311,86 @@
                 <div class="resultBar azulBar">
                     💙 OLAS DEL MAR <span></span>
                     <div class="barFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MINI GAME -->
+
+        <div id="miniGameOverlay">
+
+            <div id="miniGameBox">
+
+                <h2 id="miniGameTitle">🎮 MINI JUEGO BÍBLICO</h2>
+
+                <div id="miniGameContent"></div>
+
+                <div id="miniGameOptions"></div>
+
+                <button onclick="closeMiniGame()">
+                    ❌ CERRAR
+                </button>
+            </div>
+        </div>
+
+        <!-- REGLAS DIVINAS -->
+
+        <!-- REGLAS DIVINAS PRO -->
+
+        <div id="rulesOverlay">
+
+            <div id="rulesBox">
+
+                <div class="rulesHeader">
+                    ✨ INSTRUCCIONES DEL JUEGO ✨
+                    <span>BIENVENIDOS A LA OBRA DE DIOS</span>
+                </div>
+
+                <div class="rulesList">
+
+                    <div class="ruleItem">
+                        <span class="ruleIcon">🎈</span>
+                        <span class="ruleText">CADA GLOBO ES UNA VIDA</span>
+                    </div>
+
+                    <div class="ruleItem">
+                        <span class="ruleIcon">🤝</span>
+                        <span class="ruleText">JUEGUEN CON RESPETO</span>
+                    </div>
+
+                    <div class="ruleItem">
+                        <span class="ruleIcon">🤲</span>
+                        <span class="ruleText">AYUDEN AL PRÓJIMO</span>
+                    </div>
+
+                    <div class="ruleItem">
+                        <span class="ruleIcon">📖</span>
+                        <span class="ruleText">OBEDEZCAN LA PALABRA</span>
+                    </div>
+
+                    <div class="ruleItem">
+                        <span class="ruleIcon">🏆</span>
+                        <span class="ruleText">BUSQUEN LA GLORIA DE DIOS</span>
+                    </div>
+
+                </div>
+
+                <button class="rulesBtn" onclick="closeRules()">
+                    🙏 AMÉN — INICIAR MISIÓN
+                </button>
+            </div>
+        </div>
+        <!-- INTRO CINEMATOGRÁFICA -->
+        <div id="roundIntro">
+
+            <div class="introBox">
+
+                <div class="introTitle">
+                    ⚔️ PARTIDA INICIADA
+                </div>
+
+                <div class="introSub">
+                    EXALTA A DIOS
                 </div>
             </div>
         </div>
