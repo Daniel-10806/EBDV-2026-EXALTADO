@@ -1,3 +1,6 @@
+let dailyBonusCount = 0;
+const MAX_DAILY_BONUS = 4;
+
 function cleanEffects() {
 
     document.querySelectorAll(
@@ -22,6 +25,7 @@ function queueMsg(text, color, time = 1400) {
         playQueue();
     }
 }
+
 
 function playQueue() {
 
@@ -60,7 +64,7 @@ function playQueue() {
     }, time);
 }
 
-let gameState = "ready";
+let gameState = "playing";
 // ready | countdown | playing | finished
 
 let honorPoints = {
@@ -80,6 +84,29 @@ function giveHonor(team) {
 let history = JSON.parse(
     localStorage.getItem("history")
 ) || [];
+
+let matchHistory =
+    JSON.parse(localStorage.getItem("matchHistory")) || [];
+
+function saveMatch() {
+
+    let data = {
+        date: new Date().toLocaleString(),
+        coins: { ...coins },
+        winner: Object.entries(coins)
+            .sort((a, b) => b[1] - a[1])[0][0]
+    };
+
+    matchHistory.unshift(data);
+
+    if (matchHistory.length > 15)
+        matchHistory.length = 15;
+
+    localStorage.setItem(
+        "matchHistory",
+        JSON.stringify(matchHistory)
+    );
+}
 
 function addHistory(text) {
 
@@ -204,6 +231,51 @@ function showFloatMsg(text, x, y, color) {
     setTimeout(() => {
         el.remove();
     }, 1200);
+}
+
+function showCoinFloat(team, amount, color) {
+
+    const coinBox = document.querySelector(`#coins-${team}`);
+    if (!coinBox) return;
+
+    const rect = coinBox.getBoundingClientRect();
+
+    const x = rect.left + rect.width / 2;
+    const y = rect.top - 15;
+
+    const el = document.createElement("div");
+
+    el.className = "floatMsg";
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+    el.style.background = color;
+
+    el.innerHTML = `
+        <img src="assets/icons/coin.png" class="floatCoin">
+        ${amount}
+    `;
+
+    document.body.appendChild(el);
+
+    setTimeout(() => {
+        el.remove();
+    }, 1200);
+}
+
+function showFloatMsgOnCoin(team, text, color) {
+
+    const coinBox = document.querySelector(
+        `#coins-${team}`
+    );
+
+    if (!coinBox) return;
+
+    const rect = coinBox.getBoundingClientRect();
+
+    const x = rect.left + rect.width / 2;
+    const y = rect.top - 10; // un poco arriba
+
+    showFloatMsg(text, x, y, color);
 }
 
 function showFloatMsgOnTeam(team, text, color) {
@@ -359,6 +431,7 @@ function showRoundIntro(callback) {
 /* GAME */
 
 const MAX = 10;
+const MAX_SCORE = 1000;
 
 const teamNames = {
     rojo: "LEONES DE LA CREACIÓN",
@@ -415,6 +488,22 @@ function loadTeams() {
 
 let teams = loadTeams();
 
+/* MONEDAS */
+
+let coins = {
+    rojo: 0,
+    azul: 0,
+    verde: 0,
+    amarillo: 0
+};
+
+let savedCoins =
+    JSON.parse(localStorage.getItem("coins"));
+
+if (savedCoins) {
+    coins = savedCoins;
+}
+
 let timer = null;
 let time = 60;
 let finished = false;
@@ -423,24 +512,19 @@ let finished = false;
 
 function render() {
 
-    for (let t in teams) {
-
-        document.getElementById(t).innerHTML =
-            Array(teams[t])
-                .fill("<span>🎈</span>")
-                .join("");
-
+    for (let t in coins) {
+        document.getElementById("coins-" + t).innerText =
+            coins[t];
     }
 
+    document.getElementById("bonusInfo").innerText =
+        `🚩 Bonus: ${dailyBonusCount} / 4`;
+
     updateRanking();
-    updatePowerBars();
-    checkComeback();
-    updateMood();
-    save();
+
     highlightLeader();
-    updateControlsLock();
-    updateHypeMode();
-    checkMiniGameTrigger();
+
+    save();
 }
 
 function updateControlsLock() {
@@ -532,33 +616,131 @@ function hitEffect(team, type) {
 
 }
 
+function openChest(team) {
+
+    const chest =
+        document.querySelector(`.${team} .chestBox`);
+
+    if (!chest) return;
+
+    // Reset
+    chest.classList.remove("power");
+    void chest.offsetWidth;
+
+    // Activar modo DIOS
+    chest.classList.add("power");
+
+    // Quitar después
+    setTimeout(() => {
+        chest.classList.remove("power");
+    }, 600);
+}
+
+function divineBless(team) {
+
+    const chest =
+        document.querySelector(`.${team} .chestBox`);
+
+    if (!chest) return;
+
+    const rect = chest.getBoundingClientRect();
+
+    const light = document.createElement("div");
+
+    light.className = "divineLight";
+
+    light.style.left =
+        rect.left + rect.width / 2 - 40 + "px";
+
+    light.style.top =
+        rect.top + rect.height - 40 + "px";
+
+    document.body.appendChild(light);
+
+    setTimeout(() => {
+        light.remove();
+    }, 800);
+}
+
+function coinAnimation(team, type) {
+
+    const chest =
+        document.querySelector(`.${team} .chestBox`);
+
+    if (!chest) return;
+
+    const rect = chest.getBoundingClientRect();
+
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    for (let i = 0; i < 6; i++) {
+
+        let coin = document.createElement("img");
+
+        coin.src = "assets/icons/coin.png";
+        coin.className = "coinAnimImg";
+
+        if (type === "out") {
+            coin.classList.add("coinOut");
+        }
+
+        coin.style.left =
+            x + (Math.random() * 40 - 20) + "px";
+
+        coin.style.top =
+            y + (Math.random() * 20 - 10) + "px";
+
+        document.body.appendChild(coin);
+
+        setTimeout(() => {
+            coin.remove();
+        }, 800);
+    }
+}
+
 /* CONTROLES */
 
 function add(t) {
 
     if (gameState !== "playing") return;
 
-    if (teams[t] < MAX) {
+    // Sumar puntos
+    coins[t] += 200;
 
-        teams[t]++;
+    openChest(t);
+    divineBless(t);
 
-        sounds.win.currentTime = 0;
-        sounds.win.play();
+    // Animación monedas flotando
+    coinAnimation(t, "in");
 
-        balloonEffectFromTeam(t);
+    // Mensaje flotante
+    showCoinFloat(
+        t,
+        "+200",
+        "rgba(255,215,0,.95)"
+    );
 
-        showFloatMsgOnTeam(
-            t,
-            "+1 Vida 🎈",
-            "rgba(76,175,80,.9)"
-        );
+    // Animar icono moneda
+    const coinIcon = document.querySelector(
+        `#coins-${t}`
+    ).previousElementSibling;
 
-        updateStreak(t);
-        perseveranceBonus(t);
-        hitEffect(t, "add");
-        render();
-        flashTeam(t);
+    if (coinIcon) {
+
+        coinIcon.classList.remove("coinJump");
+        void coinIcon.offsetWidth; // Reset animación
+
+        coinIcon.classList.add("coinJump");
     }
+
+    // Sonido
+    sounds.win.play();
+
+    // Render
+    render();
+
+    checkWinner();
 }
 
 function updateStreak(team) {
@@ -630,111 +812,28 @@ function flashTeam(team) {
 
 }
 
-let countdownInterval = null;
-
-function startCountdown() {
-
-    if (gameState !== "ready") return;
-
-    gameState = "countdown";
-
-    msgQueue = []; // limpia cola previa
-
-    queueMsg("⏳ 3", "rgba(33,150,243,.9)", 1200);
-    queueMsg("⏳ 2", "rgba(33,150,243,.9)", 1200);
-    queueMsg("⏳ 1", "rgba(33,150,243,.9)", 1200);
-
-    // Mensaje puente
-    queueMsg("⚔️ ¡PREPÁRENSE!", "rgba(255,193,7,.95)", 1200);
-
-    setTimeout(() => {
-        startGameWithMission();
-    }, 6200);
-}
-
-function startGameWithMission() {
-
-    showRoundIntro(() => {
-
-        cleanEffects();
-
-        document.body.classList.add("gameStartFlash");
-
-        setTimeout(() => {
-            document.body.classList.remove("gameStartFlash");
-        }, 1200);
-
-        gameState = "playing";
-
-        updateControlsLock();
-
-        time = 60;
-        updateTimer();
-
-        document.getElementById("statusInfo").innerText = "🟢 Jugando";
-
-        currentMission = missions[
-            Math.floor(Math.random() * missions.length)
-        ];
-
-        startTimerLoop();
-        render();
-
-    });
-}
-
-function showCountdown(num) {
-
-    showCenterMsg(
-        "⏳ " + num,
-        "rgba(33,150,243,.9)"
-    );
-
-    const box = document.getElementById("centerMsg");
-    box.classList.remove("countdownPulse");
-    void box.offsetWidth;
-    box.classList.add("countdownPulse");
-
-}
-
-function startTimerLoop() {
-
-    timer = setInterval(() => {
-
-        time--;
-        updateTimer();
-
-        if (time <= 0) {
-            stopTimer();
-            finishGame();
-        }
-
-    }, 1000);
-}
-
 function remove(t) {
 
     if (gameState !== "playing") return;
 
-    if (teams[t] > 0) {
+    if (coins[t] >= 50) {
 
-        teams[t]--;
+        coins[t] -= 50;
 
-        sounds.lose.currentTime = 0;
-        sounds.lose.play();
+        openChest(t);
+        divineBless(t);
 
-        balloonEffectFromTeam(t);
+        coinAnimation(t, "out");
 
-        showFloatMsgOnTeam(
+        showCoinFloat(
             t,
-            "-1 Vida 🎈",
+            "-50",
             "rgba(244,67,54,.9)"
         );
 
-        hitEffect(t, "remove");
+        sounds.lose.play();
 
         render();
-
     }
 }
 
@@ -742,7 +841,7 @@ function remove(t) {
 
 function updateRanking() {
 
-    let s = Object.entries(teams)
+    let s = Object.entries(coins)
         .sort((a, b) => b[1] - a[1]);
 
     let html = "";
@@ -773,71 +872,40 @@ function updateRanking() {
     // Diferencia
     let diff = s[0][1] - s[1][1];
     document.getElementById("diffPoints").innerText = diff;
+
+    ranking.classList.remove("rankUpdate");
+    void ranking.offsetWidth;
+    ranking.classList.add("rankUpdate");
 }
 
 /* LIDER */
 
 function highlightLeader() {
 
-    document.querySelectorAll(".team").forEach(t => {
-        t.classList.remove("leader", "spiritAura");
-    });
+    document
+        .querySelectorAll(".team")
+        .forEach(t => {
+            t.classList.remove("leader");
+        });
 
-    let max = Math.max(...Object.values(teams));
+    let max = Math.max(...Object.values(coins));
 
-    let leaders = Object.keys(teams)
-        .filter(t => teams[t] === max);
+    let leaders = Object.keys(coins)
+        .filter(t => coins[t] === max);
 
+    // Solo si hay líder único
     if (leaders.length === 1) {
 
-        let el = document.querySelector(`.${leaders[0]}`);
+        const leader = leaders[0];
 
-        el.classList.add("leader", "spiritAura");
-    }
-}
+        const el =
+            document.querySelector(`.${leader}`);
 
-/* TIMER */
+        el.classList.add("leader");
 
-function startTimer() {
-
-    if (gameState !== "ready") return;
-
-    startCountdown();
-
-}
-
-function stopTimer() {
-    clearInterval(timer);
-    timer = null;
-}
-
-function updateTimer() {
-
-    // Si todavía hay 1 minuto o más → formato MM:SS
-    if (time >= 60) {
-
-        const minutes = Math.floor(time / 60);
-        const seconds = time % 60;
-
-        const m = minutes.toString().padStart(2, "0");
-        const s = seconds.toString().padStart(2, "0");
-
-        timerEl.innerText = `${m}:${s}`;
-
-    }
-    // Si ya es menos de 1 minuto → solo segundos
-    else {
-
-        timerEl.innerText = time.toString();
-        if (time <= 10 && time > 0) {
-
-            timerEl.classList.add("countdownPulse");
-            document.body.classList.add("panicMode");
-
-        } else {
-
-            timerEl.classList.remove("countdownPulse");
-            document.body.classList.remove("panicMode");
+        // Rayo ocasional
+        if (Math.random() < 0.15) {
+            godLightning(el);
         }
     }
 }
@@ -846,43 +914,429 @@ function updateTimer() {
 
 function finishGame() {
 
+    if (gameState === "finished") return;
+
     gameState = "finished";
-
-    document.getElementById("statusInfo")
-        .innerText = "🏁 Finalizado";
-
     finished = true;
 
-    let s = Object.entries(teams)
+    // Obtener ganador
+    let rankingArr = Object.entries(coins)
         .sort((a, b) => b[1] - a[1]);
 
+    const winner = rankingArr[0][0];
+
+    // UI
+    document.getElementById("statusInfo")
+        .innerText = "🏆 CAMPEÓN";
+
+    /* EFECTOS */
+
+    document.body.classList.add("hypeMode");
+
+    championEffect();
+    confettiFromTeam(winner);
+    teamSpecialEffect(winner);
+
+    sounds.victory.currentTime = 0;
     sounds.victory.play();
-    teamSpecialEffect(s[0][0]);
 
-    // Campeón
-    let max = s[0][1];
+    // Oscurecer fondo
+    document.body.style.transition = "filter 1s";
+    document.body.style.filter = "brightness(.5)";
 
-    let winners = s
-        .filter(e => e[1] === max)
-        .map(e => teamNames[e[0]]);
+    /* SECUENCIA FINAL */
 
-    let champ =
-        winners.length > 1
-            ? "EMPATE: " + winners.slice(0, -1).join(", ") + " y " + winners.slice(-1)
-            : "CAMPEÓN: " + winners[0];
+    divineFinalSequence(winner);
 
-    addHistory("Ganó " + champ);
+    setTimeout(() => {
 
-    let verse =
-        verses[Math.floor(Math.random() * verses.length)];
+        saveMatch();
 
-    // Mostrar gráfico primero
-    showResultChart(() => {
+        showVictoryScreen(winner);
 
-        // Luego ceremonia
-        showFinalCeremony(champ, verse);
+        showCongratsMessage(winner);
+
+    }, 3000);
+}
+
+function divineFinalSequence(team) {
+
+    const chest =
+        document.querySelector(`.${team} .chestBox`);
+
+    if (!chest) return;
+
+    // Congelar pantalla
+    document.body.classList.add("panicMode");
+
+    // Mensajes
+    queueMsg("✨ GLORIA A DIOS ✨", "gold", 1800);
+    queueMsg(
+        "🙏 VICTORIA CONSAGRADA 🙏",
+        "rgba(255,215,0,.95)",
+        2000
+    );
+
+    // Reset limpio antes
+    chest.classList.remove("open", "power");
+
+    // Rayo
+    setTimeout(() => {
+        godLightning(chest);
+    }, 500);
+
+    // Abrir cofre
+    setTimeout(() => {
+
+        chest.classList.add("open");
+
+    }, 900);
+
+    // Explosión
+    setTimeout(() => {
+
+        championEffect();
+        confettiFromTeam(team);
+
+    }, 1300);
+
+    // Lluvia monedas
+    setTimeout(() => {
+
+        rainCoins();
+
+    }, 1700);
+
+    // CERRAR cofre (CLAVE)
+    setTimeout(() => {
+
+        chest.classList.remove("open");
+
+    }, 4200);
+
+    // Quitar tensión
+    setTimeout(() => {
+
+        document.body.classList.remove("panicMode");
+
+    }, 3000);
+}
+
+
+/* ============================
+   LLUVIA DE MONEDAS
+============================ */
+
+function rainCoins() {
+
+    for (let i = 0; i < 80; i++) {
+
+        const coin = document.createElement("img");
+
+        coin.src = "assets/icons/coin.png";
+        coin.className = "rainCoin";
+
+        coin.style.left =
+            Math.random() * window.innerWidth + "px";
+
+        coin.style.top = "-60px";
+
+        coin.style.animationDelay =
+            (Math.random() * 1.5) + "s";
+
+        document.body.appendChild(coin);
+
+        setTimeout(() => {
+            coin.remove();
+        }, 4000);
+    }
+}
+
+function showGodWinner(team) {
+
+    const name = teamNames[team];
+    const score = coins[team];
+
+    // Progreso
+    const percent = Math.min(
+        (score / MAX_SCORE) * 100,
+        100
+    );
+
+    // Logros automáticos
+    let achievements = [];
+
+    if (score >= 1000) achievements.push("🏆 META ALCANZADA");
+    if (streak[team] >= 3) achievements.push("🔥 CONSTANCIA");
+    if (honorPoints[team] >= 2) achievements.push("🙏 BUEN TESTIMONIO");
+    if (dailyBonusCount >= 3) achievements.push("🚩 EQUIPO ACTIVO");
+
+    if (achievements.length === 0) {
+        achievements.push("💙 Esfuerzo fiel");
+    }
+
+    const overlay = document.createElement("div");
+    overlay.id = "godWinner";
+
+    overlay.innerHTML = `
+
+    <div class="godBoxPro">
+
+        <h1>🏆 ¡CAMPEONES!</h1>
+
+        <h2>${name}</h2>
+
+        <!-- PROGRESO -->
+        <div class="finalProgress">
+
+            <div class="progressLabel">
+                🌟 META: 1000 MONEDAS
+            </div>
+
+            <div class="progressBar">
+                <div class="progressFill"
+                     style="width:${percent}%"></div>
+            </div>
+
+            <div class="progressValue">
+                ${score} / 1000 MONEDAS
+            </div>
+
+        </div>
+
+        <!-- EXPLICACIÓN -->
+        <div class="finalExplain">
+
+            💛 GANARON JUNTANDO MONEDAS POR:
+
+            <ul>
+                <li>🎮 PARTICIPAR EN JUEGOS</li>
+                <li>🙏 ESCUCHAR LA PALABRA DE DIOS</li>
+                <li>🤝 RESPETAR A OTROS</li>
+                <li>🚩 CUMPLIR MISIONES</li>
+            </ul>
+
+        </div>
+
+        <!-- LOGROS -->
+        <div class="finalBadges">
+
+            ${achievements.map(a =>
+        `<span class="badge">${a}</span>`
+    ).join("")}
+
+        </div>
+
+        <!-- MENSAJE -->
+        <p class="finalMessage">
+            ✨ DIOS HONRA A LOS QUE LE SIRVEN CON ALEGRÍA” ✨
+        </p>
+
+        <!-- REINICIO -->
+        <div class="godTimer">
+            NUEVA PARTIDA EN <span id="finalCount">8</span>
+        </div>
+
+    </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Contador
+    let count = 8;
+    const el = overlay.querySelector("#finalCount");
+
+    const timer = setInterval(() => {
+
+        count--;
+        el.innerText = count;
+
+        if (count <= 0) {
+
+            clearInterval(timer);
+
+            overlay.remove();
+
+            restartGameGodMode();
+        }
+
+    }, 1000);
+}
+
+/* ==========================
+   MEGA RESULTADOS
+========================== */
+
+function showMegaResults() {
+
+    const overlay =
+        document.getElementById("megaResult");
+
+    overlay.style.display = "flex";
+
+    // Ordenar
+    let sorted = Object.entries(coins)
+        .sort((a, b) => b[1] - a[1]);
+
+    const winner = sorted[0][0];
+
+    document.getElementById("megaWinner")
+        .innerText =
+        "🥇 " + teamNames[winner] + " GANÓ";
+
+    const max = sorted[0][1];
+
+    sorted.forEach(([team, val]) => {
+
+        const row =
+            document.querySelector(`.megaRow.${team}`);
+
+        const fill =
+            row.querySelector(".fill");
+
+        const num =
+            row.querySelector(".scoreNum");
+
+        const percent = (val / max) * 100;
+
+        // Reset
+        fill.style.width = "0%";
+        num.innerText = "0";
+
+        setTimeout(() => {
+
+            fill.style.width = percent + "%";
+            num.innerText = val;
+
+        }, 400);
 
     });
+
+    // Cuenta regresiva
+    let count = 8;
+
+    const el =
+        document.getElementById("megaCount");
+
+    el.innerText = count;
+
+    const timer = setInterval(() => {
+
+        count--;
+        el.innerText = count;
+
+        if (count <= 0) {
+
+            clearInterval(timer);
+
+            overlay.style.display = "none";
+
+            restartGameGodMode();
+        }
+
+    }, 1000);
+}
+
+function showVictoryScreen(team) {
+
+    const v =
+        document.getElementById("victoryScreen");
+
+    const name =
+        document.getElementById("victoryTeam");
+
+    name.innerText = teamNames[team];
+
+    v.style.display = "flex";
+
+    setTimeout(() => {
+
+        v.style.display = "none";
+
+        showMegaResults();
+
+    }, 2000);
+}
+
+function showCongratsMessage(team) {
+
+    const teamName = teamNames[team];
+
+    const messages = [
+        `🎉 ¡FELICIDADES ${teamName}! 🎉`,
+        `🙏 DIOS LOS HA BENDECIDO 🙏`,
+        `🏆 VICTORIA CON PROPÓSITO 🏆`,
+        `✨ SIGAN SIRVIENDO AL SEÑOR ✨`
+    ];
+
+    const verseList = [
+        "Todo lo puedo en Cristo - Filipenses 4:13",
+        "Jehová es mi pastor - Salmos 23:1",
+        "Esfuérzate y sé valiente - Josué 1:9",
+        "El Señor pelea por vosotros - Éxodo 14:14"
+    ];
+
+    const msg =
+        messages[Math.floor(Math.random() * messages.length)];
+
+    const verse =
+        verseList[Math.floor(Math.random() * verseList.length)];
+
+    // Mensajes en cola
+    queueMsg(msg, "gold", 2000);
+
+    setTimeout(() => {
+
+        queueMsg("📖 " + verse, "rgba(255,215,0,.9)", 2600);
+
+    }, 2100);
+}
+
+function restartGameGodMode() {
+
+    // Limpiar efectos
+    cleanEffects();
+
+    // Reset cofres
+    document.querySelectorAll(".chestBox")
+        .forEach(c => {
+            c.classList.remove("open", "power");
+        });
+
+    // Reset monedas
+    coins = {
+        rojo: 0,
+        azul: 0,
+        verde: 0,
+        amarillo: 0
+    };
+
+    localStorage.setItem("coins", JSON.stringify(coins));
+
+    // Reset vida
+    teams = {
+        rojo: MAX,
+        azul: MAX,
+        verde: MAX,
+        amarillo: MAX
+    };
+
+    finished = false;
+    gameState = "playing";
+    dailyBonusCount = 0;
+
+    updateBonusButtons();
+
+    document.body.classList.remove("hypeMode");
+
+    document.body.style.filter = "brightness(1)";
+
+    document.getElementById("statusInfo")
+        .innerText = "🟢 En juego";
+
+    render();
+
+    showRoundIntro();
 }
 
 function showFinalCeremony(champ, verse) {
@@ -1128,7 +1582,7 @@ function openVerse() {
     verseText.innerText = "“" + v + "”";
 
     const reflections = [
-        "💭 ¿CÓMO PUEDES OBECEDER ESTE VERSO HOY?",
+        "💭 ¿CÓMO PUEDES APLICAR ESTE VERSO HOY?",
         "🙏 ¿POR QUIÉN PUEDES ORAR HOY?",
         "❤️ ¿A QUIÉN PUEDES AYUDAR?",
         "✨ ¿QUÉ TE QUIERE ENSEÑAR DIOS?",
@@ -1192,13 +1646,15 @@ function closeVerseHistory() {
 /* SAVE */
 
 function save() {
-    localStorage.setItem("teams", JSON.stringify(teams));
+
+    localStorage.setItem("coins",
+        JSON.stringify(coins)
+    );
 }
 
 /* START */
 
 render();
-updateTimer();
 
 function toggleFull() {
 
@@ -1211,7 +1667,7 @@ function toggleFull() {
 
 function checkComeback() {
 
-    let sorted = Object.entries(teams)
+    let sorted = Object.entries(coins)
         .sort((a, b) => b[1] - a[1]);
 
     let first = sorted[0][0];
@@ -1740,3 +2196,162 @@ window.addEventListener("load", () => {
         .style.display = "flex";
 
 });
+
+function godLightning(el) {
+
+    const rect = el.getBoundingClientRect();
+
+    let color = "gold";
+
+    if (el.classList.contains("rojo")) color = "#f44336";
+    if (el.classList.contains("azul")) color = "#2196f3";
+    if (el.classList.contains("verde")) color = "#4caf50";
+    if (el.classList.contains("amarillo")) color = "#ffeb3b";
+
+    const bolt = document.createElement("div");
+
+    bolt.className = "godLightning";
+
+    bolt.style.left =
+        rect.left + rect.width / 2 + "px";
+
+    bolt.style.background = `
+      linear-gradient(
+        to bottom,
+        transparent,
+        ${color},
+        white,
+        ${color},
+        transparent
+      )
+    `;
+
+    bolt.style.boxShadow = `
+      0 0 25px ${color},
+      0 0 50px ${color}
+    `;
+
+    document.body.appendChild(bolt);
+
+    setTimeout(() => {
+        bolt.remove();
+    }, 400);
+}
+
+function checkWinner() {
+
+    if (gameState !== "playing") return;
+
+    for (let team in coins) {
+
+        if (coins[team] >= MAX_SCORE) {
+
+            coins[team] = MAX_SCORE; // Limitar
+
+            render();
+
+            setTimeout(() => {
+                finishGame();
+            }, 800);
+
+            return;
+        }
+    }
+}
+
+function updateBonusButtons() {
+
+    if (dailyBonusCount >= MAX_DAILY_BONUS) {
+
+        document
+            .querySelectorAll(".bonusBtn")
+            .forEach(btn => {
+
+                btn.classList.add("disabled");
+
+            });
+
+    } else {
+
+        document
+            .querySelectorAll(".bonusBtn")
+            .forEach(btn => {
+
+                btn.classList.remove("disabled");
+
+            });
+    }
+}
+
+function addBonus(team) {
+
+    // Ya no hay bonus
+    if (dailyBonusCount >= MAX_DAILY_BONUS) {
+
+        showPopup("🚫 Ya se usaron los 4 bonus del día");
+
+        return;
+    }
+
+    // Sumar puntos
+    coins[team] += 50;
+
+    dailyBonusCount++;
+
+    // Actualizar UI
+    render();
+    updateBonusInfo();
+
+    // Flash botón
+    const btn = document
+        .querySelector(`.team.${team} .bonusBtn`);
+
+    btn.classList.add("bonusFlash");
+
+    setTimeout(() => {
+        btn.classList.remove("bonusFlash");
+    }, 400);
+
+    // Bloqueo si llegó al límite
+    updateBonusButtons();
+
+    // Sonido
+    sounds.win.currentTime = 0;
+    sounds.win.play();
+
+}
+
+function giveMedal(team, type) {
+
+    if (!medals[team]) medals[team] = [];
+
+    medals[team].push(type);
+}
+
+function showMatchHistory() {
+
+    const box = document.getElementById("matchList");
+
+    box.innerHTML = "";
+
+    matchHistory.forEach(m => {
+
+        let d = document.createElement("div");
+        d.className = "matchItem";
+
+        d.innerHTML = `
+      🏆 ${teamNames[m.winner]}<br>
+      📅 ${m.date}
+    `;
+
+        box.appendChild(d);
+    });
+
+    document.getElementById("matchOverlay")
+        .style.display = "flex";
+}
+
+function closeMatch() {
+    document.getElementById("matchOverlay")
+        .style.display = "none";
+}

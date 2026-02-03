@@ -16,9 +16,10 @@
     <div id="ui">
 
         <!-- HEADER -->
+
         <header>
 
-            <h1>🏆 EBDV 2026 - EXALTA A DIOS </h1>
+            <h1>🏆 EBDV 2026 - EXALTA A DIOS</h1>
 
             <div id="mainLogo">
                 <img src="logo.jpg">
@@ -27,44 +28,22 @@
             <div class="top-controls">
 
                 <div class="iconBtn">
-                    <button onclick="startTimer()">
-                        ⏱
-                    </button>
-                    <span>INICIAR</span>
-                </div>
-
-                <div class="iconBtn">
-                    <button onclick="openVerse()">
-                        📖
-                    </button>
+                    <button onclick="openVerse()">📖</button>
                     <span>BIBLIA</span>
                 </div>
 
                 <div class="iconBtn">
-                    <button onclick="openMiniGame()">
-                        🎮
-                    </button>
-                    <span>JUEGO</span>
-                </div>
-
-                <div class="iconBtn">
-                    <button onclick="toggleFull()">
-                        ⛶
-                    </button>
+                    <button onclick="toggleFull()">⛶</button>
                     <span>PANTALLA</span>
                 </div>
             </div>
         </header>
-
-        <!-- TIMER -->
-        <div id="timer">01:00</div>
 
         <!-- LAYOUT -->
         <div class="layout">
 
             <!-- PANEL -->
             <div id="rankingPanel">
-
                 <h3>🏆 PODIO</h3>
 
                 <div id="ranking"></div>
@@ -74,6 +53,8 @@
                     <p id="statusInfo">🟢 En juego</p>
 
                     <p id="roundInfo">⏱ 60 segundos</p>
+
+                    <p id="bonusInfo">🚩 BONUS: 0 / 4</p>
 
                     <div class="panelStat">
                         🏅 Líder actual:
@@ -94,70 +75,104 @@
             <!-- EQUIPOS -->
             <section class="container">
                 <div class="team rojo">
-                    <span class="teamName" title="LEONES DE LA CREACIÓN">
-                        <h2>❤️ LEONES DE LA CREACIÓN</h2>
-                    </span>
+
+                    <h2 class="teamTitle"> LEONES DE LA CREACIÓN</h2>
 
                     <div class="powerBar">
                         <div class="powerFill" id="bar-rojo"></div>
                     </div>
 
-                    <div class="balloons" id="rojo"></div>
+                    <div class="chestBox rojoChest">
+                        <div class="chestBase"></div>
+                        <div class="chestLid"></div>
+                    </div>
 
-                    <div class="buttons">
-                        <button onclick="add('rojo')">+</button>
-                        <button onclick="remove('rojo')">-</button>
+                    <div class="coinBox">
+                        <img src="assets/icons/coin.png" class="coinIcon">
+                        <span id="coins-rojo">0</span>
+                    </div>
+
+                    <div class="buttons bigButtons">
+                        <button onclick="add('rojo')">➕</button>
+                        <button onclick="remove('rojo')">➖</button>
+                        <button class="bonusBtn" onclick="addBonus('rojo')">🚩</button>
                     </div>
                 </div>
 
                 <div class="team verde">
-                    <span class="teamName" title="GUARDIANES DEL BOSQUE">
-                        <h2>💚 GUARDIANES DEL BOSQUE</h2>
-                    </span>
+
+                    <h2 class="teamTitle"> GUARDIANES DEL BOSQUE</h2>
 
                     <div class="powerBar">
                         <div class="powerFill" id="bar-verde"></div>
                     </div>
 
-                    <div class="balloons" id="verde"></div>
+                    <div class="chestBox verdeChest">
+                        <div class="chestBase"></div>
+                        <div class="chestLid"></div>
+                    </div>
 
-                    <div class="buttons">
-                        <button onclick="add('verde')">+</button>
-                        <button onclick="remove('verde')">-</button>
+                    <div class="coinBox">
+                        <img src="assets/icons/coin.png" class="coinIcon">
+                        <span id="coins-verde">0</span>
+                    </div>
+
+
+                    <div class="buttons bigButtons">
+                        <button onclick="add('verde')">➕</button>
+                        <button onclick="remove('verde')">➖</button>
+                        <button class="bonusBtn" onclick="addBonus('verde')">🚩</button>
                     </div>
                 </div>
 
                 <div class="team amarillo">
-                    <span class="teamName" title="ÁGUILAS DEL CIELO">
-                        <h2>💛 ÁGUILAS DEL CIELO</h2>
-                    </span>
+
+                    <h2 class="teamTitle"> ÁGUILAS DEL CIELO</h2>
 
                     <div class="powerBar">
                         <div class="powerFill" id="bar-amarillo"></div>
                     </div>
 
-                    <div class="balloons" id="amarillo"></div>
+                    <div class="chestBox amarilloChest">
+                        <div class="chestBase"></div>
+                        <div class="chestLid"></div>
+                    </div>
 
-                    <div class="buttons">
-                        <button onclick="add('amarillo')">+</button>
-                        <button onclick="remove('amarillo')">-</button>
+                    <div class="coinBox">
+                        <img src="assets/icons/coin.png" class="coinIcon">
+                        <span id="coins-amarillo">0</span>
+                    </div>
+
+
+                    <div class="buttons bigButtons">
+                        <button onclick="add('amarillo')">➕</button>
+                        <button onclick="remove('amarillo')">➖</button>
+                        <button class="bonusBtn" onclick="addBonus('amarillo')">🚩</button>
                     </div>
                 </div>
 
                 <div class="team azul">
-                    <span class="teamName" title="OLAS DEL MAR">
-                        <h2>💙 OLAS DEL MAR</h2>
-                    </span>
+
+                    <h2 class="teamTitle"> OLAS DEL MAR</h2>
 
                     <div class="powerBar">
                         <div class="powerFill" id="bar-azul"></div>
                     </div>
 
-                    <div class="balloons" id="azul"></div>
+                    <div class="chestBox azulChest">
+                        <div class="chestBase"></div>
+                        <div class="chestLid"></div>
+                    </div>
 
-                    <div class="buttons">
-                        <button onclick="add('azul')">+</button>
-                        <button onclick="remove('azul')">-</button>
+                    <div class="coinBox">
+                        <img src="assets/icons/coin.png" class="coinIcon">
+                        <span id="coins-azul">0</span>
+                    </div>
+
+                    <div class="buttons bigButtons">
+                        <button onclick="add('azul')">➕</button>
+                        <button onclick="remove('azul')">➖</button>
+                        <button class="bonusBtn" onclick="addBonus('azul')">🚩</button>
                     </div>
                 </div>
             </section>
@@ -174,26 +189,6 @@
             <div class="podiumBox second">🥈<br><span id="p2"></span></div>
             <div class="podiumBox third">🥉<br><span id="p3"></span></div>
             <div id="winnerTitle"></div>
-
-        </div>
-
-        <!-- CEREMONIA FINAL -->
-
-        <div id="finalCeremony">
-
-            <div class="ceremonyBox">
-
-                <div id="ceremonyTitle">
-                    🏆 RESULTADO FINAL
-                </div>
-
-                <div id="ceremonyWinner"></div>
-
-                <div id="ceremonyVerse"></div>
-
-                <div id="ceremonyCountdown"></div>
-
-            </div>
 
         </div>
 
@@ -285,56 +280,6 @@
 
         </div>
 
-        <!-- RESULTADOS GRAFICO -->
-
-        <div id="resultOverlay">
-
-            <div id="resultBox">
-
-                <h1>📊 RESULTADOS FINALES</h1>
-
-                <div class="resultBar rojoBar">
-                    ❤️ LEONES DE LA CREACIÓN <span></span>
-                    <div class="barFill"></div>
-                </div>
-
-                <div class="resultBar verdeBar">
-                    💚 GUARDIANES DEL BOSQUE <span></span>
-                    <div class="barFill"></div>
-                </div>
-
-                <div class="resultBar amarilloBar">
-                    💛 ÁGUILAS DEL CIELO <span></span>
-                    <div class="barFill"></div>
-                </div>
-
-                <div class="resultBar azulBar">
-                    💙 OLAS DEL MAR <span></span>
-                    <div class="barFill"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MINI GAME -->
-
-        <div id="miniGameOverlay">
-
-            <div id="miniGameBox">
-
-                <h2 id="miniGameTitle">🎮 MINI JUEGO BÍBLICO</h2>
-
-                <div id="miniGameContent"></div>
-
-                <div id="miniGameOptions"></div>
-
-                <button onclick="closeMiniGame()">
-                    ❌ CERRAR
-                </button>
-            </div>
-        </div>
-
-        <!-- REGLAS DIVINAS -->
-
         <!-- REGLAS DIVINAS PRO -->
 
         <div id="rulesOverlay">
@@ -349,34 +294,50 @@
                 <div class="rulesList">
 
                     <div class="ruleItem">
-                        <span class="ruleIcon">🎈</span>
-                        <span class="ruleText">CADA GLOBO ES UNA VIDA</span>
+                        <span class="ruleIcon">🎮</span>
+                        <span class="ruleText">
+                            JUEGO: +200 MONEDAS
+                        </span>
                     </div>
 
                     <div class="ruleItem">
-                        <span class="ruleIcon">🤝</span>
-                        <span class="ruleText">JUEGUEN CON RESPETO</span>
+                        <span class="ruleIcon">🏕️</span>
+                        <span class="ruleText">
+                            PARTICIPACIÓN EN ZONAS: +200
+                        </span>
                     </div>
 
                     <div class="ruleItem">
-                        <span class="ruleIcon">🤲</span>
-                        <span class="ruleText">AYUDEN AL PRÓJIMO</span>
+                        <span class="ruleIcon">⏰</span>
+                        <span class="ruleText">
+                            PUNTUALIDAD: +200
+                        </span>
                     </div>
 
                     <div class="ruleItem">
-                        <span class="ruleIcon">📖</span>
-                        <span class="ruleText">OBEDEZCAN LA PALABRA</span>
+                        <span class="ruleIcon">💃</span>
+                        <span class="ruleText">
+                            COREOGRAFÍA: +200
+                        </span>
+                    </div>
+
+                    <div class="ruleItem specialHelp">
+                        <span class="ruleIcon">🚩</span>
+                        <span class="ruleText">
+                            BANDERAS BONUS: +50 (4 POR DÍA)
+                        </span>
                     </div>
 
                     <div class="ruleItem">
                         <span class="ruleIcon">🏆</span>
-                        <span class="ruleText">BUSQUEN LA GLORIA DE DIOS</span>
+                        <span class="ruleText">
+                            GANA EL EQUIPO QUE LLEGUE A 1000 MONEDAS
+                        </span>
                     </div>
-
                 </div>
 
                 <button class="rulesBtn" onclick="closeRules()">
-                    🙏 AMÉN — INICIAR MISIÓN
+                    🙏 AMÉN — INICIAR
                 </button>
             </div>
         </div>
@@ -391,6 +352,80 @@
 
                 <div class="introSub">
                     EXALTA A DIOS
+                </div>
+            </div>
+        </div>
+
+        <!-- PRE VICTORIA -->
+
+        <div id="victoryScreen">
+
+            <div class="victoryBox">
+
+                <h1>🎉 ¡VICTORIA!</h1>
+
+                <div id="victoryTeam"></div>
+
+            </div>
+
+        </div>
+
+        <!-- RESULTADOS EPICOS -->
+
+        <div id="megaResult">
+
+            <div class="megaBox">
+
+                <h1>🏆 RESULTADOS FINALES</h1>
+
+                <div id="megaWinner"></div>
+
+                <div class="megaChart">
+
+                    <div class="megaRow rojo">
+                        <div class="teamLabel">🔴 LEONES</div>
+
+                        <div class="barWrap">
+                            <div class="fill"></div>
+                        </div>
+
+                        <div class="scoreNum">0</div>
+                    </div>
+
+                    <div class="megaRow verde">
+                        <div class="teamLabel">🟢 GUARDIANES</div>
+
+                        <div class="barWrap">
+                            <div class="fill"></div>
+                        </div>
+
+                        <div class="scoreNum">0</div>
+                    </div>
+
+                    <div class="megaRow amarillo">
+                        <div class="teamLabel">🟡 ÁGUILAS</div>
+
+                        <div class="barWrap">
+                            <div class="fill"></div>
+                        </div>
+
+                        <div class="scoreNum">0</div>
+                    </div>
+
+                    <div class="megaRow azul">
+                        <div class="teamLabel">🔵 OLAS</div>
+
+                        <div class="barWrap">
+                            <div class="fill"></div>
+                        </div>
+
+                        <div class="scoreNum">0</div>
+                    </div>
+
+                </div>
+
+                <div class="megaTimer">
+                    Nueva partida en <span id="megaCount">10</span>
                 </div>
             </div>
         </div>
